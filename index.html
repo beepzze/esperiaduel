@@ -1,0 +1,3216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Esperia Draft — AFK Journey 1v1</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:     #0f0c1a;
+  --bg2:    #181328;
+  --bg3:    #211b38;
+  --bg4:    #2a2248;
+  --gold:   #e8b84b;
+  --gold2:  #f5d580;
+  --purple: #9b6fff;
+  --pur2:   #c4a0ff;
+  --teal:   #3ecfb0;
+  --red:    #ff5e6c;
+  --text1:  #f0eadc;
+  --text2:  #b0a080;
+  --text3:  #5a4e38;
+  --bdr:    rgba(232,184,75,0.15);
+  --bdr2:   rgba(232,184,75,0.38);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text1);font-family:'Nunito',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 50% at 50% 0%,rgba(100,50,180,0.18) 0%,transparent 60%),
+             radial-gradient(ellipse 40% 30% at 10% 80%,rgba(62,207,176,0.07) 0%,transparent 50%),
+             radial-gradient(ellipse 30% 40% at 90% 60%,rgba(155,111,255,0.07) 0%,transparent 50%)}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(232,184,75,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(232,184,75,0.025) 1px,transparent 1px);
+  background-size:48px 48px}
+
+/* ── SCREENS ── */
+.screen{position:relative;z-index:1;display:none;min-height:100vh}
+.screen.active{display:flex}
+
+/* ══════════ LOBBY SCREEN ══════════ */
+#lobbyScreen{flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;gap:24px}
+.logo-block{text-align:center}
+.logo-gem{width:48px;height:48px;background:linear-gradient(135deg,var(--gold),#7a5f20);
+  clip-path:polygon(50% 0%,100% 35%,80% 100%,20% 100%,0% 35%);margin:0 auto 14px}
+.logo-title{font-family:'Cinzel',serif;font-size:32px;font-weight:900;color:var(--gold);letter-spacing:0.06em}
+.logo-sub{font-size:14px;color:var(--text2);margin-top:6px}
+
+.lobby-card{background:var(--bg2);border:1px solid var(--bdr2);border-radius:16px;padding:32px 36px;width:100%;max-width:480px}
+.lobby-title{font-family:'Cinzel',serif;font-size:18px;font-weight:700;color:var(--text1);margin-bottom:20px;text-align:center}
+
+.input-group{margin-bottom:16px}
+.input-label{font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.18em;color:var(--text2);text-transform:uppercase;margin-bottom:7px;display:block}
+.input-field{width:100%;background:var(--bg3);border:1px solid var(--bdr);border-radius:8px;padding:11px 14px;
+  color:var(--text1);font-family:'Nunito',sans-serif;font-size:14px;outline:none;transition:border-color 0.2s}
+.input-field:focus{border-color:var(--bdr2)}
+.input-field::placeholder{color:var(--text3)}
+
+.role-picker{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.role-btn{padding:14px;border-radius:10px;border:1.5px solid var(--bdr);background:var(--bg3);
+  color:var(--text2);cursor:pointer;transition:all 0.2s;text-align:center;font-family:'Cinzel',serif;font-size:11px;
+  letter-spacing:0.1em;text-transform:uppercase}
+.role-btn:hover{border-color:var(--bdr2);color:var(--text1)}
+.role-btn.selected{border-color:var(--gold);background:rgba(232,184,75,0.1);color:var(--gold)}
+.role-icon{font-size:22px;margin-bottom:6px}
+
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0;color:var(--text3);font-size:12px}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--bdr)}
+
+.btn{font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:0.12em;
+  padding:12px 24px;border-radius:8px;border:none;cursor:pointer;transition:all 0.2s;text-transform:uppercase;width:100%}
+.btn-gold{background:linear-gradient(135deg,var(--gold),#a07020);color:#1a0f00}
+.btn-gold:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(232,184,75,0.3)}
+.btn-gold:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-purple{background:linear-gradient(135deg,var(--purple),#5030b0);color:white}
+.btn-purple:hover{transform:translateY(-1px);box-shadow:0 4px 16px rgba(155,111,255,0.35)}
+.btn-purple:disabled{opacity:0.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn-ghost{background:transparent;color:var(--text2);border:1px solid var(--bdr);width:auto;padding:9px 18px}
+.btn-ghost:hover{border-color:var(--bdr2);color:var(--text1)}
+.btn-red{background:linear-gradient(135deg,var(--red),#900020);color:white}
+.btn-red:hover{transform:translateY(-1px)}
+
+.room-code-display{background:var(--bg3);border:1px solid var(--bdr2);border-radius:10px;padding:16px;text-align:center;margin-bottom:16px}
+.room-code-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.2em;color:var(--text2);text-transform:uppercase;margin-bottom:8px}
+.room-code{font-family:'Cinzel',serif;font-size:28px;font-weight:900;color:var(--gold);letter-spacing:0.3em}
+.copy-hint{font-size:11px;color:var(--text3);margin-top:6px}
+
+.waiting-indicator{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px;
+  background:rgba(62,207,176,0.08);border:1px solid rgba(62,207,176,0.25);border-radius:8px;
+  font-size:13px;color:var(--teal);margin-bottom:16px}
+.dot-pulse{display:flex;gap:5px}
+.dot-pulse span{width:7px;height:7px;border-radius:50%;background:var(--teal);animation:dotPulse 1.4s ease infinite}
+.dot-pulse span:nth-child(2){animation-delay:0.2s}
+.dot-pulse span:nth-child(3){animation-delay:0.4s}
+@keyframes dotPulse{0%,80%,100%{transform:scale(0.7);opacity:0.4}40%{transform:scale(1);opacity:1}}
+
+/* ══════════ DRAFT SCREEN ══════════ */
+#draftScreen{flex-direction:column}
+
+.draft-topbar{display:flex;align-items:center;padding:0 20px;height:60px;
+  background:rgba(15,12,26,0.92);border-bottom:1px solid var(--bdr2);
+  backdrop-filter:blur(12px);gap:16px;flex-shrink:0;position:sticky;top:0;z-index:50}
+.draft-logo{font-family:'Cinzel',serif;font-size:16px;font-weight:900;color:var(--gold);letter-spacing:0.06em;display:flex;align-items:center;gap:8px}
+.draft-logo-gem{width:20px;height:20px;background:linear-gradient(135deg,var(--gold),#7a5f20);
+  clip-path:polygon(50% 0%,100% 35%,80% 100%,20% 100%,0% 35%);flex-shrink:0}
+.phase-badge{font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;
+  padding:5px 14px;border-radius:20px;border:1px solid}
+.phase-ban{border-color:rgba(255,94,108,0.6);background:rgba(255,94,108,0.12);color:var(--red)}
+.phase-pick{border-color:rgba(62,207,176,0.6);background:rgba(62,207,176,0.12);color:var(--teal)}
+.phase-done{border-color:rgba(232,184,75,0.6);background:rgba(232,184,75,0.12);color:var(--gold)}
+
+.timer-block{margin-left:auto;display:flex;align-items:center;gap:10px}
+.timer{font-family:'Cinzel',serif;font-size:22px;font-weight:900;color:var(--text1);min-width:36px;text-align:center}
+.timer.urgent{color:var(--red);animation:urgentPulse 0.5s ease infinite}
+@keyframes urgentPulse{0%,100%{opacity:1}50%{opacity:0.5}}
+.turn-label{font-size:12px;color:var(--text2);text-align:right}
+.turn-name{color:var(--gold2);font-weight:700}
+
+.draft-body{display:grid;grid-template-columns:220px 1fr 220px;flex:1;overflow:hidden;height:calc(100vh - 60px)}
+
+/* ── PLAYER COLUMNS ── */
+.player-col{display:flex;flex-direction:column;background:rgba(24,19,40,0.6);border:1px solid var(--bdr);
+  backdrop-filter:blur(8px);overflow-y:auto;height:100%}
+.player-col.left{border-left:none;border-top:none;border-bottom:none}
+.player-col.right{border-right:none;border-top:none;border-bottom:none}
+
+.pcol-header{padding:16px;border-bottom:1px solid var(--bdr);text-align:center}
+.pcol-avatar{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-size:20px;font-weight:800;color:white;margin:0 auto 8px}
+.pcol-name{font-family:'Cinzel',serif;font-size:14px;font-weight:700;color:var(--text1)}
+.pcol-role{font-size:11px;color:var(--text2);margin-top:2px}
+.pcol-score{font-family:'Cinzel',serif;font-size:10px;color:var(--gold);margin-top:4px;letter-spacing:0.08em}
+
+.col-section{padding:12px}
+.col-section-label{font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.18em;color:var(--text3);
+  text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+
+.ban-slot{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;
+  background:var(--bg3);border:1px solid rgba(255,94,108,0.25);margin-bottom:6px;min-height:44px}
+.ban-slot .bs-em{font-size:20px;opacity:0.3}
+.ban-slot.filled .bs-em{opacity:1}
+.ban-slot.filled{border-color:rgba(255,94,108,0.55);background:rgba(255,94,108,0.08)}
+.bs-name{font-size:11px;font-weight:600;color:var(--text2)}
+.ban-slot.filled .bs-name{color:var(--red)}
+.ban-x{font-size:14px;color:var(--red);margin-left:auto;opacity:0;transition:opacity 0.2s}
+.ban-slot.filled .ban-x{opacity:1}
+
+.pick-slot{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;
+  background:var(--bg3);border:1px solid var(--bdr);margin-bottom:7px;min-height:56px;position:relative}
+.pick-slot .ps-em{font-size:26px;opacity:0.25}
+.pick-slot.filled .ps-em{opacity:1}
+.pick-slot.filled{border-color:rgba(62,207,176,0.45);background:rgba(62,207,176,0.08)}
+.ps-info{flex:1}
+.ps-name{font-size:12px;font-weight:700;color:var(--text2)}
+.pick-slot.filled .ps-name{color:var(--text1)}
+.ps-role{font-size:10px;color:var(--text3)}
+.pick-slot.filled .ps-role{color:var(--text2)}
+.pick-num{font-family:'Cinzel',serif;font-size:18px;font-weight:900;color:var(--bg4);position:absolute;right:10px;top:50%;transform:translateY(-50%)}
+.pick-slot.filled .pick-num{color:var(--teal);opacity:0.5}
+.pick-slot.active-slot{border-color:var(--gold);background:rgba(232,184,75,0.07);animation:slotGlow 1.5s ease infinite}
+@keyframes slotGlow{0%,100%{border-color:rgba(232,184,75,0.4)}50%{border-color:rgba(232,184,75,0.9)}}
+
+.my-turn-indicator{margin:12px;padding:10px;border-radius:8px;text-align:center;
+  background:rgba(232,184,75,0.1);border:1px solid var(--bdr2);
+  font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.15em;color:var(--gold);text-transform:uppercase}
+.not-turn-indicator{margin:12px;padding:10px;border-radius:8px;text-align:center;
+  background:rgba(0,0,0,0.2);border:1px solid var(--bdr);
+  font-size:11px;color:var(--text3)}
+
+/* ── CENTER HERO POOL ── */
+.hero-pool{display:flex;flex-direction:column;overflow:hidden;height:100%;position:relative}
+.pool-top{padding:14px 18px 10px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pool-label{font-family:'Cinzel',serif;font-size:12px;font-weight:700;letter-spacing:0.15em;color:var(--text2);text-transform:uppercase}
+.filter-row{display:flex;gap:5px;flex-wrap:wrap}
+.fc{font-family:'Cinzel',serif;font-size:8.5px;letter-spacing:0.1em;font-weight:700;
+  padding:4px 11px;border-radius:20px;border:1px solid var(--bdr);background:none;
+  color:var(--text2);cursor:pointer;transition:all 0.15s;text-transform:uppercase}
+.fc:hover{border-color:var(--bdr2);color:var(--text1)}
+.fc.on{border-color:var(--gold);color:var(--gold);background:rgba(232,184,75,0.1)}
+
+.search-bar{padding:10px 18px;border-bottom:1px solid var(--bdr)}
+.search-input{width:100%;background:var(--bg3);border:1px solid var(--bdr);border-radius:7px;
+  padding:8px 12px;color:var(--text1);font-family:'Nunito',sans-serif;font-size:13px;outline:none;transition:border-color 0.2s}
+.search-input:focus{border-color:var(--bdr2)}
+.search-input::placeholder{color:var(--text3)}
+
+.hero-grid-scroll{flex:1;overflow-y:auto;padding:14px 16px;min-height:200px}
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:8px}
+
+.hcard{border-radius:9px;padding:10px 6px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;
+  cursor:pointer;transition:all 0.18s;border:1.5px solid var(--bdr);background:var(--bg3);position:relative}
+.hcard:hover:not(.disabled){border-color:var(--gold);background:rgba(232,184,75,0.08);transform:translateY(-2px)}
+.hcard.selected-preview{border-color:var(--gold);background:rgba(232,184,75,0.12)}
+.hcard.banned{opacity:0.28;cursor:not-allowed;filter:grayscale(1)}
+.hcard.picked{opacity:0.22;cursor:not-allowed;filter:grayscale(1)}
+.hcard.disabled{cursor:not-allowed}
+.hcard.banned::after{content:'✕';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:var(--red);font-weight:900;background:rgba(255,94,108,0.08);border-radius:9px}
+.hcard.picked::after{content:'✓';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:var(--teal);font-weight:900;background:rgba(62,207,176,0.06);border-radius:9px}
+.hcard-em{font-size:26px}
+.hcard-name{font-size:9.5px;font-weight:700;color:var(--text1);text-align:center;line-height:1.2}
+.hcard-class{font-size:8px;color:var(--text2)}
+
+.pool-action{padding:12px 18px;border-top:1px solid var(--bdr);display:flex;gap:10px;align-items:center;position:sticky;bottom:0;background:var(--bg2);z-index:10;backdrop-filter:blur(8px)}
+.selected-preview-area{flex:1;display:flex;align-items:center;gap:8px}
+.preview-label{font-size:12px;color:var(--text2)}
+.preview-hero{display:flex;align-items:center;gap:6px;padding:6px 12px;border-radius:7px;
+  background:var(--bg3);border:1px solid var(--bdr);font-size:13px}
+.preview-em{font-size:18px}
+.preview-name{font-weight:700;color:var(--text1);font-size:12px}
+.action-btn{font-family:'Cinzel',serif;font-size:10px;font-weight:700;letter-spacing:0.12em;
+  padding:10px 20px;border-radius:7px;border:none;cursor:pointer;transition:all 0.2s;text-transform:uppercase;white-space:nowrap}
+.action-ban{background:linear-gradient(135deg,var(--red),#800020);color:white}
+.action-ban:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(255,94,108,0.35)}
+.action-pick{background:linear-gradient(135deg,var(--teal),#1a7060);color:#000}
+.action-pick:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(62,207,176,0.35)}
+.action-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ── RESULT SCREEN ── */
+#resultScreen{flex-direction:column;align-items:center;justify-content:flex-start;padding:40px 20px;gap:24px;overflow-y:auto}
+.result-title{font-family:'Cinzel',serif;font-size:28px;font-weight:900;color:var(--gold);text-align:center;letter-spacing:0.06em}
+.result-sub{font-size:13px;color:var(--text2);text-align:center}
+.result-teams{display:flex;gap:16px;width:100%;max-width:960px;align-items:flex-start;justify-content:center;flex-wrap:wrap}
+.result-team{background:var(--bg2);border:1px solid var(--bdr2);border-radius:14px;padding:20px;flex:1;min-width:260px;max-width:420px;overflow:hidden}
+.result-team svg{max-width:100%;height:auto}
+.result-team-name{font-family:'Cinzel',serif;font-size:13px;font-weight:700;color:var(--text2);
+  letter-spacing:0.15em;text-transform:uppercase;margin-bottom:14px;text-align:center}
+.result-hero{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;
+  background:var(--bg3);border:1px solid rgba(62,207,176,0.2);margin-bottom:6px}
+.rh-em{font-size:20px}
+.rh-name{font-size:13px;font-weight:700;color:var(--text1)}
+.rh-class{font-size:11px;color:var(--text2)}
+.result-bans{margin-top:14px}
+.result-bans-label{font-size:10px;font-family:'Cinzel',serif;letter-spacing:0.15em;color:var(--text3);text-transform:uppercase;margin-bottom:8px}
+.result-ban{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;
+  background:rgba(255,94,108,0.07);border:1px solid rgba(255,94,108,0.25);margin-bottom:5px;font-size:12px;color:var(--red)}
+.vs-badge{font-family:'Cinzel',serif;font-size:32px;font-weight:900;color:var(--gold);
+  text-align:center;align-self:center}
+.result-actions{display:flex;gap:12px}
+
+/* ── SERIES SCOREBOARD ── */
+.series-scoreboard{
+  display:flex;align-items:center;gap:16px;
+  background:var(--bg2);border:1px solid var(--bdr2);border-radius:12px;
+  padding:14px 24px;margin-bottom:4px
+}
+.series-score{
+  font-family:'Cinzel',serif;font-size:28px;font-weight:900;min-width:24px;text-align:center
+}
+.series-dash{font-family:'Cinzel',serif;font-size:18px;color:var(--text3)}
+.series-name{font-size:12px;font-weight:700;text-align:center;max-width:80px;overflow:hidden;text-overflow:ellipsis}
+.series-winner-banner{
+  background:linear-gradient(135deg,rgba(232,184,75,0.15),rgba(160,112,32,0.1));
+  border:2px solid var(--gold);border-radius:14px;padding:20px 32px;text-align:center;
+  animation:seriesWinPulse 2s ease infinite
+}
+@keyframes seriesWinPulse{0%,100%{box-shadow:0 0 20px rgba(232,184,75,0.2)}50%{box-shadow:0 0 40px rgba(232,184,75,0.4)}}
+.series-winner-text{
+  font-family:'Cinzel',serif;font-size:24px;font-weight:900;color:var(--gold);letter-spacing:0.08em
+}
+.series-winner-sub{font-size:12px;color:var(--text2);margin-top:6px}
+
+/* ── VOTE INDICATOR ── */
+.vote-status{
+  font-size:11px;color:var(--text3);text-align:center;margin-top:4px;
+  font-family:'Cinzel',serif;letter-spacing:0.08em
+}
+.vote-status.has-vote{color:var(--teal)}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:200;
+  background:var(--bg2);border:1px solid var(--bdr2);border-radius:10px;padding:12px 20px;
+  font-size:13px;color:var(--text1);box-shadow:0 8px 32px rgba(0,0,0,0.5);
+  animation:toastIn 0.3s ease;pointer-events:none;white-space:nowrap}
+@keyframes toastIn{from{opacity:0;transform:translateX(-50%) translateY(12px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
+/* ── TURN NOTIFICATION ── */
+.turn-flash{animation:turnFlash 0.6s ease 3}
+@keyframes turnFlash{
+  0%,100%{background:rgba(15,12,26,0.92)}
+  50%{background:rgba(232,184,75,0.25)}
+}
+.turn-notification-banner{
+  position:fixed;top:70px;left:50%;transform:translateX(-50%);z-index:200;
+  background:linear-gradient(135deg,rgba(232,184,75,0.95),rgba(160,112,32,0.95));
+  color:#1a0f00;font-family:'Cinzel',serif;font-size:14px;font-weight:700;
+  letter-spacing:0.1em;text-transform:uppercase;
+  padding:14px 32px;border-radius:10px;
+  box-shadow:0 6px 24px rgba(232,184,75,0.4);
+  animation:turnBannerIn 0.4s ease,turnBannerOut 0.5s ease 2.5s forwards;
+  pointer-events:none;white-space:nowrap;text-align:center
+}
+@keyframes turnBannerIn{from{opacity:0;transform:translateX(-50%) translateY(-20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+@keyframes turnBannerOut{from{opacity:1;transform:translateX(-50%) translateY(0)}to{opacity:0;transform:translateX(-50%) translateY(-20px)}}
+
+/* ── FEARLESS DRAFT ── */
+.hcard.fearless-banned{opacity:0.18;cursor:not-allowed;filter:grayscale(1) brightness(0.6)}
+.hcard.fearless-banned::after{content:'⛔';position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:900;background:rgba(100,50,180,0.1);border-radius:9px}
+.fearless-indicator{
+  display:flex;align-items:center;gap:8px;padding:8px 14px;
+  background:rgba(155,111,255,0.1);border:1px solid rgba(155,111,255,0.35);border-radius:8px;
+  font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.12em;color:var(--pur2);text-transform:uppercase;
+  margin:0 auto;width:fit-content
+}
+.fearless-hero-list{
+  display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px;max-width:400px
+}
+.fearless-hero-chip{
+  font-size:10px;padding:3px 8px;border-radius:5px;
+  background:rgba(155,111,255,0.1);border:1px solid rgba(155,111,255,0.25);
+  color:var(--pur2);opacity:0.7
+}
+
+/* ── MISC ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bdr2);border-radius:2px}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.fadein{animation:fadeIn 0.3s ease both}
+
+/* ── DISCLAIMER ── */
+.disclaimer{
+  max-width:480px;width:100%;text-align:center;
+  font-size:10px;line-height:1.6;color:var(--text3);
+  padding:16px 20px;margin-top:8px;
+  border-top:1px solid var(--bdr);
+  opacity:0.7
+}
+
+/* ── DISCONNECT OVERLAY ── */
+.disconnect-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(5,3,15,0.85);
+  backdrop-filter:blur(6px);
+  display:none;align-items:center;justify-content:center;
+  flex-direction:column;gap:20px
+}
+.disconnect-overlay.open{display:flex}
+.disconnect-box{
+  background:var(--bg2);border:1px solid var(--bdr2);border-radius:16px;
+  padding:32px 40px;text-align:center;max-width:360px;width:90%
+}
+.disconnect-title{
+  font-family:'Cinzel',serif;font-size:20px;font-weight:700;
+  color:var(--red);margin-bottom:8px;letter-spacing:0.05em
+}
+.disconnect-msg{font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.5}
+.disconnect-actions{display:flex;gap:10px;justify-content:center}
+
+
+
+/* ── CHAT PANEL ── */
+.chat-panel {
+  position: fixed;
+  bottom: 0; right: 0;
+  width: 300px;
+  height: 380px;
+  background: var(--bg2);
+  border: 1px solid var(--bdr2);
+  border-radius: 12px 12px 0 0;
+  display: flex; flex-direction: column;
+  z-index: 100;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.4);
+  transition: height 0.25s ease;
+}
+.chat-panel.collapsed { height: 44px; overflow: hidden; }
+.chat-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 14px;
+  height: 44px; flex-shrink: 0;
+  background: var(--bg3);
+  border-radius: 12px 12px 0 0;
+  border-bottom: 1px solid var(--bdr);
+  cursor: pointer; user-select: none;
+}
+.chat-header-title {
+  font-family: 'Cinzel', serif; font-size: 11px;
+  font-weight: 700; letter-spacing: 0.15em;
+  color: var(--gold); text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+}
+.chat-unread {
+  background: var(--red); color: white;
+  font-size: 9px; font-weight: 700;
+  width: 16px; height: 16px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  display: none;
+}
+.chat-unread.show { display: flex; }
+.chat-toggle { font-size: 14px; color: var(--text3); }
+.chat-messages {
+  flex: 1; overflow-y: auto;
+  padding: 10px 12px;
+  display: flex; flex-direction: column;
+  gap: 6px;
+}
+.chat-msg {
+  display: flex; gap: 7px; align-items: flex-start;
+}
+.chat-msg.mine { flex-direction: row-reverse; }
+.chat-avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; color: white; flex-shrink: 0;
+}
+.chat-bubble {
+  max-width: 190px;
+  padding: 7px 10px;
+  border-radius: 10px;
+  font-size: 12.5px; line-height: 1.5;
+  word-break: break-word;
+}
+.chat-msg.mine .chat-bubble {
+  background: rgba(155,111,255,0.25);
+  border: 1px solid rgba(155,111,255,0.4);
+  color: var(--text1);
+  border-radius: 10px 10px 2px 10px;
+}
+.chat-msg.theirs .chat-bubble {
+  background: var(--bg3);
+  border: 1px solid var(--bdr);
+  color: var(--text2);
+  border-radius: 10px 10px 10px 2px;
+}
+.chat-msg-name {
+  font-size: 10px; color: var(--text3);
+  margin-bottom: 2px; font-family: 'Cinzel', serif;
+  letter-spacing: 0.06em;
+}
+.chat-msg.mine .chat-msg-name { text-align: right; }
+.chat-system-msg {
+  text-align: center;
+  font-size: 11px; font-style: italic;
+  color: var(--text3);
+  padding: 2px 0;
+}
+.chat-input-row {
+  display: flex; gap: 8px; align-items: center;
+  padding: 10px 12px;
+  border-top: 1px solid var(--bdr);
+  flex-shrink: 0;
+}
+.chat-input {
+  flex: 1; background: var(--bg3);
+  border: 1px solid var(--bdr); border-radius: 8px;
+  padding: 8px 12px; color: var(--text1);
+  font-family: 'Nunito', sans-serif; font-size: 13px;
+  outline: none; transition: border-color 0.2s;
+}
+.chat-input:focus { border-color: var(--bdr2); }
+.chat-input::placeholder { color: var(--text3); }
+.chat-send-btn {
+  width: 34px; height: 34px; border-radius: 8px;
+  background: rgba(155,111,255,0.2);
+  border: 1px solid rgba(155,111,255,0.4);
+  color: var(--pur2); cursor: pointer; font-size: 15px;
+  transition: all 0.2s; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.chat-send-btn:hover { background: rgba(155,111,255,0.35); }
+@media (max-width: 768px) {
+  .chat-panel { width: 100%; right: 0; border-radius: 12px 12px 0 0; }
+}
+
+
+
+
+/* ══════════════════════════════════════
+   MOBILE ≤ 768px
+══════════════════════════════════════ */
+@media (max-width: 768px) {
+
+  /* LOBBY */
+  #lobbyScreen { padding: 24px 14px; gap: 16px; }
+  .logo-title { font-size: 22px; }
+  .logo-gem { width: 36px; height: 36px; }
+  .lobby-card { padding: 20px 16px; }
+  .role-picker { gap: 8px; }
+  .role-btn { padding: 10px 6px; font-size: 10px; }
+  .room-code { font-size: 20px; letter-spacing: 0.2em; }
+  .btn { font-size: 11px; padding: 11px 18px; }
+
+  /* DRAFT TOPBAR */
+  .draft-topbar {
+    flex-wrap: wrap; height: auto;
+    padding: 8px 12px; gap: 6px 10px;
+  }
+  .draft-logo { font-size: 13px; }
+  .phase-badge { font-size: 8.5px; padding: 3px 9px; }
+  .timer-block {
+    width: 100%; margin-left: 0;
+    padding-top: 6px;
+    border-top: 1px solid var(--bdr);
+    justify-content: space-between;
+  }
+  .timer { font-size: 22px; }
+  .turn-label { font-size: 11px; }
+
+  /* DRAFT BODY — grid: blue | red on top, hero pool full width below */
+  .draft-body {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    grid-template-rows: auto 1fr !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .player-col.left {
+    grid-column: 1;
+    grid-row: 1;
+    height: auto !important;
+    min-height: 0;
+    overflow: visible;
+    border-right: 1px solid var(--bdr);
+    border-bottom: 1px solid var(--bdr);
+    width: 100% !important;
+  }
+
+  .player-col.right {
+    grid-column: 2;
+    grid-row: 1;
+    height: auto !important;
+    min-height: 0;
+    overflow: visible;
+    border-bottom: 1px solid var(--bdr);
+    width: 100% !important;
+  }
+
+  .hero-pool {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    width: 100%;
+    min-height: 0;
+  }
+
+  .pcol-header { padding: 8px; }
+  .pcol-avatar { width: 32px; height: 32px; font-size: 13px; margin-bottom: 4px; }
+  .pcol-name { font-size: 11px; }
+  .pcol-role, .pcol-score { font-size: 9px; }
+
+  .col-section { padding: 6px 8px; }
+  .col-section-label { font-size: 8px; margin-bottom: 5px; }
+
+  .ban-slot { min-height: 30px; padding: 4px 6px; margin-bottom: 4px; gap: 5px; }
+  .ban-slot .bs-em { font-size: 14px; }
+  .bs-name { font-size: 9.5px; }
+
+  .pick-slot { min-height: 38px; padding: 5px 7px; margin-bottom: 5px; gap: 7px; }
+  .pick-slot .ps-em { font-size: 18px; }
+  .ps-name { font-size: 10px; }
+  .ps-role { font-size: 8.5px; }
+  .pick-num { font-size: 13px; right: 6px; }
+
+  .my-turn-indicator, .not-turn-indicator {
+    margin: 5px 6px; padding: 6px 8px; font-size: 8.5px;
+  }
+
+  /* Hero Pool */
+  .pool-top { padding: 8px 10px 6px; gap: 4px; }
+  .pool-label { font-size: 10px; }
+  .fc { font-size: 8px; padding: 3px 8px; }
+
+  .search-bar { padding: 6px 10px; }
+  .search-input { font-size: 12px; padding: 6px 10px; }
+
+  .hero-grid-scroll { padding: 8px 8px; min-height: 260px; }
+  .hero-grid { grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); gap: 6px; }
+  .hcard { padding: 7px 4px 6px; border-radius: 7px; }
+  .hcard-em { font-size: 20px; }
+  .hcard-name { font-size: 9px; }
+  .hcard-class { font-size: 7.5px; }
+
+  .pool-action {
+    padding: 8px 10px; gap: 7px; flex-wrap: wrap;
+  }
+  .selected-preview-area { width: 100%; }
+  .preview-label { font-size: 11px; }
+  .action-btn { flex: 1; font-size: 10px; padding: 10px 6px; min-width: 80px; }
+
+  /* Result */
+  #resultScreen { padding: 24px 14px; gap: 14px; }
+  .result-title { font-size: 24px; }
+  .result-sub { font-size: 13px; }
+  .result-teams { grid-template-columns: 1fr; gap: 12px; max-width: 100%; }
+  .vs-badge { display: none; }
+  .result-team { padding: 14px; }
+  .result-team-name { font-size: 13px; }
+  .rh-name { font-size: 12px; }
+  .result-actions { flex-direction: column; width: 100%; }
+  .result-actions .btn { width: 100%; }
+
+  /* Chat */
+  .chat-panel {
+    width: 100% !important;
+    right: 0 !important;
+    left: 0 !important;
+    border-radius: 12px 12px 0 0;
+    height: 300px;
+  }
+  .chat-panel.collapsed { height: 44px; }
+}
+
+
+/* ── HERO ACTION MODAL ── */
+.hero-action-overlay {
+  display: none;
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(5,3,15,0.75);
+  backdrop-filter: blur(4px);
+  align-items: center; justify-content: center;
+}
+.hero-action-overlay.open { display: flex; }
+.hero-action-modal {
+  background: var(--bg2);
+  border: 1px solid var(--bdr2);
+  border-radius: 16px;
+  padding: 28px 32px;
+  text-align: center;
+  min-width: 260px;
+  max-width: 340px;
+  animation: modalPop 0.2s ease;
+}
+@keyframes modalPop {
+  from { opacity:0; transform: scale(0.88); }
+  to   { opacity:1; transform: scale(1); }
+}
+.ham-em   { font-size: 52px; margin-bottom: 8px; }
+.ham-name {
+  font-family: 'Cinzel', serif; font-size: 18px;
+  font-weight: 700; color: var(--text1);
+  margin-bottom: 4px;
+}
+.ham-cls  { font-size: 12px; color: var(--text2); margin-bottom: 22px; }
+.ham-btns { display: flex; gap: 12px; justify-content: center; }
+.ham-ban {
+  font-family: 'Cinzel', serif; font-size: 11px;
+  font-weight: 700; letter-spacing: 0.12em;
+  padding: 11px 24px; border-radius: 8px;
+  border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--red), #800020);
+  color: white; transition: all 0.18s; text-transform: uppercase;
+}
+.ham-ban:hover  { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(255,94,108,0.4); }
+.ham-pick {
+  font-family: 'Cinzel', serif; font-size: 11px;
+  font-weight: 700; letter-spacing: 0.12em;
+  padding: 11px 24px; border-radius: 8px;
+  border: none; cursor: pointer;
+  background: linear-gradient(135deg, var(--teal), #1a7060);
+  color: #000; transition: all 0.18s; text-transform: uppercase;
+}
+.ham-pick:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(62,207,176,0.4); }
+.ham-cancel {
+  font-size: 11px; color: var(--text3); margin-top: 14px;
+  background: none; border: none; cursor: pointer;
+  font-family: 'Cinzel', serif; letter-spacing: 0.1em;
+}
+.ham-cancel:hover { color: var(--text2); }
+
+
+/* ══════════════════════════════════════
+   FORMATION SCREEN
+══════════════════════════════════════ */
+#formationScreen {
+  flex-direction: column;
+  background: var(--bg);
+  min-height: 100vh;
+}
+
+.form-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 60px; flex-shrink: 0;
+  background: rgba(15,12,26,0.92);
+  border-bottom: 1px solid var(--bdr2);
+  backdrop-filter: blur(12px);
+  position: sticky; top: 0; z-index: 50;
+}
+.form-title {
+  font-family: 'Cinzel', serif; font-size: 16px; font-weight: 700;
+  color: var(--gold); letter-spacing: 0.06em;
+}
+.form-round-badge {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.18em;
+  padding: 5px 14px; border-radius: 20px; text-transform: uppercase;
+  border: 1px solid rgba(62,207,176,0.5);
+  background: rgba(62,207,176,0.1); color: var(--teal);
+}
+.form-status {
+  font-size: 12px; color: var(--text2); text-align: right;
+}
+.form-status span { color: var(--gold2); font-weight: 700; }
+
+.form-body {
+  display: grid;
+  grid-template-columns: 220px 1fr 220px;
+  flex: 1; overflow: hidden;
+  height: calc(100vh - 60px);
+}
+
+/* Left: your heroes to place */
+.form-heroes-panel {
+  background: rgba(24,19,40,0.7);
+  border-right: 1px solid var(--bdr);
+  display: flex; flex-direction: column;
+  padding: 16px 12px; gap: 8px; overflow-y: auto;
+}
+.form-panel-label {
+  font-family: 'Cinzel', serif; font-size: 9.5px;
+  letter-spacing: 0.2em; color: var(--text3);
+  text-transform: uppercase; margin-bottom: 4px;
+}
+.form-hero-chip {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 9px;
+  background: var(--bg3); border: 1.5px solid var(--bdr);
+  cursor: pointer; transition: all 0.18s; position: relative;
+  user-select: none;
+}
+.form-hero-chip:hover:not(.placed):not(.disabled-chip) {
+  border-color: var(--gold); background: rgba(232,184,75,0.08);
+  transform: translateX(2px);
+}
+.form-hero-chip.selected-chip {
+  border-color: var(--gold); background: rgba(232,184,75,0.12);
+  box-shadow: 0 0 12px rgba(232,184,75,0.2);
+}
+.form-hero-chip.placed {
+  border-color: rgba(62,207,176,0.5);
+  background: rgba(62,207,176,0.08);
+  opacity: 0.7; cursor: default;
+}
+.form-hero-chip.disabled-chip {
+  opacity: 0.35; cursor: not-allowed;
+}
+.chip-em { font-size: 22px; }
+.chip-info { flex: 1; }
+.chip-name { font-size: 12px; font-weight: 700; color: var(--text1); }
+.chip-cls  { font-size: 10px; color: var(--text2); }
+.chip-tile {
+  font-family: 'Cinzel', serif; font-size: 9px;
+  color: var(--teal); letter-spacing: 0.05em;
+}
+
+/* Center: hex grid */
+.form-grid-area {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  overflow: visible; padding: 24px 16px; gap: 16px;
+}
+
+.hex-grid-wrap { position: relative; }
+
+.hex-grid svg { overflow: visible; }
+
+/* Right: opponent status */
+.form-opp-panel {
+  background: rgba(24,19,40,0.7);
+  border-left: 1px solid var(--bdr);
+  display: flex; flex-direction: column;
+  padding: 16px 12px; gap: 8px;
+}
+.opp-hero-slot {
+  display: flex; align-items: center; gap: 8px;
+  padding: 9px 12px; border-radius: 8px;
+  background: var(--bg3); border: 1px solid var(--bdr);
+  min-height: 44px;
+}
+.opp-hero-slot .oh-em { font-size: 20px; opacity: 0.25; }
+.opp-hero-slot.revealed .oh-em { opacity: 1; }
+.opp-hero-slot .oh-name { font-size: 11px; color: var(--text3); }
+.opp-hero-slot.revealed .oh-name { color: var(--text1); font-weight: 700; }
+.opp-hero-slot .oh-tile { font-size: 10px; color: var(--text2); margin-left: auto; }
+
+.form-lock-area {
+  padding: 14px 16px;
+  border-top: 1px solid var(--bdr);
+  display: flex; flex-direction: column; gap: 8px;
+}
+.lock-info { font-size: 11px; color: var(--text2); text-align: center; }
+.btn-lock {
+  font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.12em; padding: 12px;
+  border-radius: 8px; border: none; cursor: pointer;
+  text-transform: uppercase; width: 100%; transition: all 0.2s;
+  background: linear-gradient(135deg, var(--gold), #a07020);
+  color: #1a0f00;
+}
+.btn-lock:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(232,184,75,0.3); }
+.btn-lock:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+.lock-status {
+  font-family: 'Cinzel', serif; font-size: 9px;
+  letter-spacing: 0.12em; text-align: center;
+  color: var(--text3); text-transform: uppercase;
+}
+
+/* Hex tile styles */
+.hex-tile { cursor: pointer; transition: opacity 0.15s; }
+.hex-tile:hover .hex-bg { filter: brightness(1.3); }
+.hex-tile.selected-tile .hex-bg { filter: brightness(1.5); stroke: var(--gold) !important; stroke-width: 2.5px !important; }
+.hex-tile.occupied-tile { cursor: default; }
+.hex-tile.occupied-tile .hex-bg { filter: brightness(0.8); }
+
+/* Reveal overlay */
+.form-reveal-overlay {
+  position: fixed; inset: 0; z-index: 400;
+  background: rgba(5,3,15,0.92);
+  display: none; align-items: center; justify-content: center;
+  flex-direction: column; gap: 20px;
+}
+.form-reveal-overlay.open { display: flex; }
+.reveal-title {
+  font-family: 'Cinzel', serif; font-size: 28px; font-weight: 900;
+  color: var(--gold); letter-spacing: 0.05em;
+}
+.reveal-teams {
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  gap: 20px; align-items: start; width: 100%; max-width: 700px; padding: 0 24px;
+}
+.reveal-vs { font-family:'Cinzel',serif; font-size:28px; font-weight:900; color:var(--gold); align-self:center; }
+
+/* Mobile formation */
+@media (max-width: 768px) {
+  .form-body {
+    display: flex; flex-direction: column;
+    height: auto; overflow: visible;
+  }
+  .form-heroes-panel, .form-opp-panel {
+    border: none; border-bottom: 1px solid var(--bdr);
+    flex-direction: row; flex-wrap: wrap;
+    padding: 10px; gap: 6px; overflow: visible;
+  }
+  .form-hero-chip { flex: 0 0 calc(50% - 3px); }
+  .form-grid-area { padding: 12px 8px; }
+  .hex-grid-wrap svg { max-width: 100%; height: auto; }
+}
+/* This forces the browser to keep images sharp when scaled */
+img {
+  image-rendering: -webkit-optimize-contrast; 
+  image-rendering: crisp-edges;               
+  image-rendering: pixelated;                 
+}
+
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     LOBBY SCREEN
+════════════════════════════════════════ -->
+<div class="screen active" id="lobbyScreen">
+  <div class="logo-block">
+    <div class="logo-gem"></div>
+    <div class="logo-title">Esperia Duels</div>
+    <div class="logo-sub">AFK Journey · 1v1 Draft Pick</div>
+  </div>
+
+  <div class="lobby-card" id="lobbyCard">
+    <div class="lobby-title">Enter Your Name</div>
+    <div class="input-group">
+      <label class="input-label">Player Name</label>
+      <input class="input-field" id="nameInput" placeholder="e.g. Yaphalla" maxlength="20">
+    </div>
+    <div style="margin-bottom:20px">
+      <div class="input-label" style="display:block;margin-bottom:10px">Choose Side</div>
+      <div class="role-picker">
+        <button class="role-btn" id="roleBlue" onclick="pickRole('blue')">
+          <div class="role-icon">🔵</div>Blue Side<br><span style="font-size:9px;color:var(--text3)">Creates Room</span>
+        </button>
+        <button class="role-btn" id="roleRed" onclick="pickRole('red')">
+          <div class="role-icon">🔴</div>Red Side<br><span style="font-size:9px;color:var(--text3)">Joins Room</span>
+        </button>
+      </div>
+    </div>
+
+    <div id="blueActions" style="display:none">
+      <button class="btn btn-gold" onclick="createRoom()">Create Room</button>
+    </div>
+
+    <div id="redActions" style="display:none">
+      <div class="input-group">
+        <label class="input-label">Room Code</label>
+        <input class="input-field" id="codeInput" placeholder="e.g. ESPR-4821" maxlength="9" style="text-transform:uppercase;letter-spacing:0.1em">
+      </div>
+      <button class="btn btn-purple" onclick="joinRoom()">Join Room</button>
+    </div>
+  </div>
+
+  <div class="lobby-card" id="waitingCard" style="display:none;text-align:center">
+    <div class="lobby-title">Room Created!</div>
+    <div class="room-code-display">
+      <div class="room-code-label">Share This Code</div>
+      <div class="room-code" id="roomCodeDisplay">----</div>
+      <div class="copy-hint">Give this code to your opponent</div>
+    </div>
+    <div class="waiting-indicator">
+      <div class="dot-pulse"><span></span><span></span><span></span></div>
+      Waiting for opponent to join...
+    </div>
+    <button class="btn btn-ghost" onclick="copyCode()" style="margin:0 auto;display:block">Copy Code</button>
+    <button class="btn btn-ghost" onclick="skipToDraft()" style="margin:8px auto 0;display:block;font-size:10px;opacity:0.6">⚡ Skip to Formation (Test)</button>
+  </div>
+
+  <div class="disclaimer">
+    This is a fan-made tool and is not affiliated with, endorsed by, or sponsored by Lilith Games. 
+    AFK Journey, all character names, artwork, and related assets are trademarks and copyrights of Lilith Games. 
+    All rights belong to their respective owners. This tool is for personal, non-commercial community use only.
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     DRAFT SCREEN
+════════════════════════════════════════ -->
+<div class="screen" id="draftScreen">
+
+  <!-- topbar -->
+  <div class="draft-topbar">
+    <div class="draft-logo"><div class="draft-logo-gem"></div>Esperia Duels</div>
+    <div class="phase-badge phase-ban" id="phaseBadge">Ban Phase</div>
+    <div id="fearlessBadge" class="phase-badge" style="display:none;border-color:rgba(155,111,255,0.6);background:rgba(155,111,255,0.12);color:var(--pur2)">⛔ Fearless G1</div>
+    <div style="margin-left:12px;font-size:12px;color:var(--text2)">Room: <span id="topRoomCode" style="color:var(--gold);font-family:'Cinzel',serif;letter-spacing:0.1em"></span></div>
+    <div style="margin-left:auto;margin-right:12px">
+      <button id="skipDraftBtn" class="btn btn-ghost" style="width:auto;padding:6px 14px;font-size:10px;opacity:0.7" onclick="voteSkipDraft()">⚡ Skip Draft</button>
+      <span id="skipDraftStatus" style="font-size:10px;color:var(--text2);margin-left:8px"></span>
+    </div>
+    <div class="timer-block">
+      <div>
+        <div class="turn-label">Current Turn: <span class="turn-name" id="turnName">—</span></div>
+        <div class="turn-label" id="turnAction" style="margin-top:2px">—</div>
+      </div>
+      <div class="timer" id="timerDisplay">45</div>
+    </div>
+  </div>
+
+  <div class="draft-body">
+
+    <!-- LEFT: Blue Player -->
+    <div class="player-col left" id="blueCol">
+      <div class="pcol-header">
+        <div class="pcol-avatar" id="blueAvatar" style="background:linear-gradient(135deg,#3060ff,#6090ff)">B</div>
+        <div class="pcol-name" id="blueName">Blue Side</div>
+        <div class="pcol-role">Blue Side</div>
+      </div>
+      <div id="blueTurnBanner"></div>
+      <div class="col-section">
+        <div class="col-section-label"><span>Bans</span><span id="blueBanCount" style="color:var(--red)">0/3</span></div>
+        <div id="blueBans"></div>
+      </div>
+      <div class="col-section">
+        <div class="col-section-label"><span>Picks</span><span id="bluePickCount" style="color:var(--teal)">0/5</span></div>
+        <div id="bluePicks"></div>
+      </div>
+    </div>
+
+    <!-- CENTER: Hero Pool -->
+    <div class="hero-pool">
+      <div class="pool-top">
+        <span class="pool-label">Hero Pool</span>
+        <div class="filter-row" id="filterRow"></div>
+      </div>
+      <div class="search-bar">
+        <input class="search-input" id="searchInput" placeholder="Search heroes..." oninput="renderPool()">
+      </div>
+      <div class="hero-grid-scroll">
+        <div class="hero-grid" id="heroGrid"></div>
+      </div>
+      <div class="pool-action" style="display:none">
+        <div class="selected-preview-area" id="previewArea">
+          <span class="preview-label">Click a hero to select</span>
+        </div>
+        <button class="action-btn action-ban" id="banBtn" disabled onclick="confirmBan()">Ban</button>
+        <button class="action-btn action-pick" id="pickBtn" disabled onclick="confirmPick()">Pick</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: Red Player -->
+    <div class="player-col right" id="redCol">
+      <div class="pcol-header">
+        <div class="pcol-avatar" id="redAvatar" style="background:linear-gradient(135deg,#ff3060,#ff6090)">R</div>
+        <div class="pcol-name" id="redName">Red Side</div>
+        <div class="pcol-role">Red Side</div>
+      </div>
+      <div id="redTurnBanner"></div>
+      <div class="col-section">
+        <div class="col-section-label"><span>Bans</span><span id="redBanCount" style="color:var(--red)">0/3</span></div>
+        <div id="redBans"></div>
+      </div>
+      <div class="col-section">
+        <div class="col-section-label"><span>Picks</span><span id="redPickCount" style="color:var(--teal)">0/5</span></div>
+        <div id="redPicks"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     RESULT SCREEN
+════════════════════════════════════════ -->
+<div class="screen" id="resultScreen">
+  <div class="result-title">Formations Set!</div>
+  <div class="result-sub">Both sides have locked in — good luck in Esperia!</div>
+
+  <!-- Series Scoreboard -->
+  <div class="series-scoreboard" id="seriesScoreboard">
+    <div style="text-align:center">
+      <div class="series-name" id="seriesBlueLabel" style="color:#6090ff">Blue</div>
+      <div class="series-score" id="seriesBlueScore" style="color:#6090ff">0</div>
+    </div>
+    <div class="series-dash">—</div>
+    <div style="text-align:center">
+      <div class="series-name" id="seriesRedLabel" style="color:#ff6090">Red</div>
+      <div class="series-score" id="seriesRedScore" style="color:#ff6090">0</div>
+    </div>
+    <div style="font-family:'Cinzel',serif;font-size:9px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-left:8px">Best of 3</div>
+  </div>
+
+  <!-- Series Winner Banner (hidden until someone wins 2) -->
+  <div id="seriesWinnerBanner" style="display:none"></div>
+
+  <div class="result-teams" id="resultTeams"></div>
+  
+  <div class="result-actions" style="display: flex; flex-direction: column; gap: 12px; align-items: center; margin-top: 20px; width:100%; max-width:440px;">
+    
+    <!-- Fearless mode indicator (shown when active) -->
+    <div id="fearlessIndicator" style="display:none">
+      <div class="fearless-indicator">⛔ Fearless Draft — Game <span id="fearlessGameNum">1</span></div>
+      <div class="fearless-hero-list" id="fearlessHeroList"></div>
+    </div>
+
+    <!-- Winner buttons — HOST (Blue) only -->
+    <div id="winnerSection">
+      <div style="font-family:'Cinzel',serif;color:var(--gold);font-size:0.9rem;letter-spacing:1px;text-align:center;margin-bottom:8px">LOG MATCH RESULT</div>
+      <div id="winnerButtons" style="display:flex;gap:10px;width:100%;max-width:400px"></div>
+      <div id="winnerStatus" style="font-size:11px;color:var(--text3);text-align:center;margin-top:6px"></div>
+    </div>
+
+    <!-- Action buttons — all require 2 votes -->
+    <div id="postGameActions" style="display:flex;gap:10px;width:100%;max-width:400px">
+      <button class="btn btn-ghost" style="flex:1;padding:11px" id="voteMapBtn" onclick="voteAction('map')">🗺️ Map</button>
+      <button class="btn btn-purple" style="flex:1;padding:11px" id="voteFearlessBtn" onclick="voteAction('fearless')">⛔ Fearless</button>
+      <button class="btn btn-gold" style="flex:1;padding:11px" id="voteNewDraftBtn" onclick="voteAction('newdraft')">🔄 New Draft</button>
+    </div>
+    <div id="actionVoteStatus" class="vote-status"></div>
+    
+  </div>
+</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue, push, onChildAdded, onDisconnect } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDSOMFCqZ4aMWNCP5YPptL4Xk0zulpnFhQ",
+  authDomain: "esperiaduels.firebaseapp.com",
+  databaseURL: "https://esperiaduels-default-rtdb.firebaseio.com",
+  projectId: "esperiaduels",
+  storageBucket: "esperiaduels.firebasestorage.app",
+  messagingSenderId: "705852800223",
+  appId: "1:705852800223:web:f2b45322c45d37b7957d6a"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+window._fbSet = (code, data) => set(ref(db, 'drafts/' + code), data);
+window._fbGet = (code, cb)   => get(ref(db, 'drafts/' + code)).then(snap => cb(snap.exists() ? snap.val() : null));
+window._fbOn  = (code, cb)   => onValue(ref(db, 'drafts/' + code), snap => cb(snap.exists() ? snap.val() : null));
+window._fbChat = {
+  send: (code, msg) => push(ref(db, 'chats/' + code), { ...msg, ts: Date.now() }),
+  listen: (code, cb) => onChildAdded(ref(db, 'chats/' + code), snap => {
+    cb({ id: snap.key, ...snap.val() });
+  })
+};
+// Presence: write heartbeat + set onDisconnect flag
+window._fbPresence = {
+  start: (code, role) => {
+    const presRef = ref(db, 'presence/' + code + '/' + role);
+    set(presRef, { online: true, lastSeen: Date.now() });
+    onDisconnect(presRef).set({ online: false, lastSeen: Date.now() });
+    // Heartbeat every 8 seconds
+    setInterval(() => set(presRef, { online: true, lastSeen: Date.now() }), 8000);
+  },
+  listen: (code, role, cb) => {
+    onValue(ref(db, 'presence/' + code + '/' + role), snap => {
+      cb(snap.exists() ? snap.val() : null);
+    });
+  }
+};
+</script>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// HERO DATA
+// ═══════════════════════════════════════════════════════════
+const HEROES = [
+  {name:"Aliceth", em:"🏹", cls:"Marksman", faction:"Celestial"},
+  {name:"Alna", em:"🛡️", cls:"Tank", faction:"Celestial"},
+  {name:"Alsa", em:"❄️", cls:"Mage", faction:"Mauler"},
+  {name:"Antandra", em:"⚔️", cls:"Tank", faction:"Mauler"},
+  {name:"Arden", em:"🌿", cls:"Mage", faction:"Wilder"},
+  {name:"Aurora", em:"🌙", cls:"Mage", faction:"Celestial"},
+  {name:"Atalanta", em:"🏹", cls:"Marksman", faction:"Lightbearer"},
+  {name:"Athalia", em:"⚡", cls:"Rogue", faction:"Celestial"},
+  {name:"Baelran", em:"🗡️", cls:"Warrior", faction:"Celestial"},
+  {name:"Berial", em:"👁️", cls:"Rogue", faction:"Hypogean"},
+  {name:"Bonnie", em:"🎯", cls:"Marksman", faction:"Graveborn"},
+  {name:"Brutus", em:"💪", cls:"Warrior", faction:"Mauler"},
+  {name:"Bryon", em:"🏹", cls:"Marksman", faction:"Wilder"},
+  {name:"Callan", em:"🛡️", cls:"Tank", faction:"Graveborn"},
+  {name:"Carolina", em:"🌊", cls:"Mage", faction:"Graveborn"},
+  {name:"Cassadee", em:"💫", cls:"Mage", faction:"Lightbearer"},
+  {name:"Cecia", em:"🦋", cls:"Marksman", faction:"Graveborn"},
+  {name:"Contess", em:"🧙", cls:"Support", faction:"Hypogean"},
+  {name:"Cryonaia", em:"🧊", cls:"Mage", faction:"Hypogean"},
+  {name:"Cyran", em:"🌙", cls:"Mage", faction:"Lightbearer"},
+  {name:"Daimon", em:"👹", cls:"Tank", faction:"Graveborn"},
+  {name:"Damian", em:"🌒", cls:"Support", faction:"Wilder"},
+  {name:"Dionel", em:"☀️", cls:"Marksman", faction:"Celestial"},
+  {name:"Dunlingr", em:"🗿", cls:"Tank", faction:"Celestial"},
+  {name:"Eironn", em:"🌪️", cls:"Rogue", faction:"Wilder"},
+  {name:"Twins", em:"💫", cls:"Support", faction:"Celestial"},
+  {name:"Faramor", em:"🦊", cls:"Rogue", faction:"Wilder"},
+  {name:"Fay", em:"🧚", cls:"Support", faction:"Lightbearer"},
+  {name:"Florabelle", em:"🌸", cls:"Warrior", faction:"Wilder"},
+  {name:"Galahad", em:"🌟", cls:"Mage", faction:"Mauler"},
+  {name:"Gerda", em:"🛡️", cls:"Tank", faction:"Mauler"},
+  {name:"Granny Dahnie", em:"👵", cls:"Tank", faction:"Wilder"},
+  {name:"Gunnar", em:"🔫", cls:"Tank", faction:"Hypogean"},
+  {name:"Harak", em:"💀", cls:"Warrior", faction:"Hypogean"},
+  {name:"Hepler", em:"🐻", cls:"Tank", faction:"Mauler"},
+  {name:"Hewynn", em:"🌿", cls:"Support", faction:"Wilder"},
+  {name:"Hodgkin", em:"🔬", cls:"Warrior", faction:"Graveborn"},
+  {name:"Hugin", em:"🐦", cls:"Support", faction:"Lightbearer"},
+  {name:"Igor", em:"🦴", cls:"Warrior", faction:"Graveborn"},
+  {name:"Indris", em:"🦅", cls:"Marksman", faction:"Wilder"},
+  {name:"Isabella", em:"🌺", cls:"Support", faction:"Graveborn"},
+  {name:"Kafra", em:"🐊", cls:"Warrior", faction:"Wilder"},
+  {name:"Koko", em:"🐸", cls:"Support", faction:"Mauler"},
+  {name:"Kordan", em:"🪓", cls:"Warrior", faction:"Mauler"},
+  {name:"Korin", em:"⚔️", cls:"Warrior", faction:"Lightbearer"},
+  {name:"Kruger", em:"🔨", cls:"Warrior", faction:"Mauler"},
+  {name:"Kulu", em:"🎯", cls:"Marksman", faction:"Hypogean"},
+  {name:"Laios", em:"🗡️", cls:"Warrior", faction:"Dimensional"},
+  {name:"Lenya", em:"🐆", cls:"Rogue", faction:"Wilder"},
+  {name:"Lily May", em:"🌺", cls:"Rogue", faction:"Wilder"},
+  {name:"Lorsan", em:"🌳", cls:"Support", faction:"Wilder"},
+  {name:"Lucca", em:"🛡️", cls:"Tank", faction:"Lightbearer"},
+  {name:"Lucius", em:"✨", cls:"Tank", faction:"Lightbearer"},
+  {name:"Lucy", em:"⭐", cls:"Mage", faction:"Dimensional"},
+  {name:"Ludovic", em:"🧛", cls:"Support", faction:"Graveborn"},
+  {name:"Lumont", em:"🦁", cls:"Tank", faction:"Mauler"},
+  {name:"Lyca", em:"🐺", cls:"Marksman", faction:"Wilder"},
+  {name:"Marcille", em:"🪄", cls:"Mage", faction:"Dimensional"},
+  {name:"Marilee", em:"🌟", cls:"Marksman", faction:"Lightbearer"},
+  {name:"Mehira", em:"😈", cls:"Mage", faction:"Hypogean"},
+  {name:"Mikola", em:"🐍", cls:"Support", faction:"Mauler"},
+  {name:"Mirael", em:"🔥", cls:"Mage", faction:"Lightbearer"},
+  {name:"Nara", em:"🗡️", cls:"Rogue", faction:"Graveborn"},
+  {name:"Natsu", em:"🔥", cls:"Warrior", faction:"Dimensional"},
+  {name:"Nazrik", em:"🎯", cls:"Marksman", faction:"Mauler"},
+  {name:"Niru", em:"🩸", cls:"Support", faction:"Graveborn"},
+  {name:"Odie", em:"🏹", cls:"Marksman", faction:"Mauler"},
+  {name:"Pandora", em:"📦", cls:"Support", faction:"Dimensional"},
+  {name:"Pang", em:"🐼", cls:"Warrior", faction:"Wilder"},
+  {name:"Parisa", em:"🧿", cls:"Mage", faction:"Wilder"},
+  {name:"Perseus", em:"⚔️", cls:"Warrior", faction:"Lightbearer"},
+  {name:"Phraesto", em:"🌑", cls:"Tank", faction:"Hypogean"},
+  {name:"Pippa", em:"🐰", cls:"Mage", faction:"Wilder"},
+  {name:"Ravion", em:"🦅", cls:"Rogue", faction:"Wilder"},
+  {name:"Reinier", em:"🌀", cls:"Support", faction:"Hypogean"},
+  {name:"Rhys", em:"🏹", cls:"Marksman", faction:"Mauler"},
+  {name:"Rowan", em:"🍀", cls:"Support", faction:"Lightbearer"},
+  {name:"Saida", em:"🗡️", cls:"Rogue", faction:"Hypogean"},
+  {name:"Salazer", em:"🐉", cls:"Rogue", faction:"Graveborn"},
+  {name:"Satrana", em:"🔥", cls:"Mage", faction:"Mauler"},
+  {name:"Scarlita", em:"⚔️", cls:"Warrior", faction:"Celestial"},
+  {name:"Seth", em:"🐾", cls:"Rogue", faction:"Mauler"},
+  {name:"Shadewing", em:"🦇", cls:"Rogue", faction:"Graveborn"},
+  {name:"Shakir", em:"🏔️", cls:"Rogue", faction:"Mauler"},
+  {name:"Shemira", em:"💀", cls:"Mage", faction:"Graveborn"},
+  {name:"Silven", em:"🏹", cls:"Marksman", faction:"Lightbearer"},
+  {name:"Silvina", em:"🗡️", cls:"Rogue", faction:"Graveborn"},
+  {name:"Sinbad", em:"⚓", cls:"Rogue", faction:"Lightbearer"},
+  {name:"Smokey & Meerky", em:"🐾", cls:"Support", faction:"Mauler"},
+  {name:"Sonja", em:"⚔️", cls:"Warrior", faction:"Lightbearer"},
+  {name:"Solise", em:"🌸", cls:"Support", faction:"Wilder"},
+  {name:"Soren", em:"🐾", cls:"Rogue", faction:"Mauler"},
+  {name:"Talene", em:"🦜", cls:"Mage", faction:"Celestial"},
+  {name:"Tasi", em:"🧚", cls:"Mage", faction:"Wilder"},
+  {name:"Temesia", em:"⚖️", cls:"Tank", faction:"Lightbearer"},
+  {name:"Thador", em:"🛡️", cls:"Tank", faction:"Wilder"},
+  {name:"Thoran", em:"🛡️", cls:"Tank", faction:"Graveborn"},
+  {name:"Tilaya", em:"⚔️", cls:"Warrior", faction:"Wilder"},
+  {name:"Ulmus", em:"🌲", cls:"Tank", faction:"Wilder"},
+  {name:"Vala", em:"🗡️", cls:"Rogue", faction:"Lightbearer"},
+  {name:"Valen", em:"⚔️", cls:"Warrior", faction:"Lightbearer"},
+  {name:"Valka", em:"⚔️", cls:"Warrior", faction:"Graveborn"},
+  {name:"Velara", em:"🌿", cls:"Support", faction:"Wilder"},
+  {name:"Viperian", em:"🐍", cls:"Mage", faction:"Graveborn"},
+  {name:"Walker", em:"🔫", cls:"Rogue", faction:"Lightbearer"},
+  {name:"Zandrok", em:"⚔️", cls:"Warrior", faction:"Mauler"},
+  {name:"Zorya", em:"🪨", cls:"Warrior", faction:"Graveborn"}
+];
+const CLASSES = ["All","Tank","Warrior","Mage","Support","Marksman","Rogue"];
+const FACTIONS = ["All Factions","Lightbearer","Mauler","Wilder","Graveborn","Celestial","Hypogean","Dimensional"];
+ 
+// ═══════════════════════════════════════════════════════════
+// DRAFT SEQUENCE
+// Ban  : B R B R B R  (3 each, alternating, blue first)
+// Pick : B R R B B R R B B R  (5 each, snake draft)
+// Total: 6 bans + 10 picks = 16 turns
+// ═══════════════════════════════════════════════════════════
+const SEQUENCE = [
+  {phase:"ban",  side:"blue"}, // 1  A bans
+  {phase:"ban",  side:"red"},  // 2  B bans
+  {phase:"pick", side:"blue"}, // 3  A picks
+  {phase:"pick", side:"red"},  // 4  B picks
+  {phase:"pick", side:"red"},  // 5  B picks
+  {phase:"pick", side:"blue"}, // 6  A picks
+  {phase:"pick", side:"blue"}, // 7  A picks
+  {phase:"ban",  side:"red"},  // 8  B bans
+  {phase:"ban",  side:"red"},  // 9  B bans
+  {phase:"ban",  side:"blue"}, // 10 A bans
+  {phase:"ban",  side:"blue"}, // 11 A bans
+  {phase:"pick", side:"red"},  // 12 B picks
+  {phase:"pick", side:"red"},  // 13 B picks
+  {phase:"pick", side:"blue"}, // 14 A picks
+  {phase:"pick", side:"blue"}, // 15 A picks
+  {phase:"pick", side:"red"},  // 16 B picks
+];
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════
+// SERVER API
+// ═══════════════════════════════════════════════════════════
+const API_BASE = 'https://esperia-server-production.up.railway.app/api';
+let sessionToken = null;
+
+async function api(path, body = {}) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (sessionToken) headers['x-session-token'] = sessionToken;
+  const res = await fetch(API_BASE + path, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(body)
+  });
+  const data = await res.json();
+  if (!res.ok) {
+    toast(data.error || 'Server error');
+    throw new Error(data.error);
+  }
+  return data;
+}
+
+async function apiGet(path) {
+  const res = await fetch(API_BASE + path);
+  return res.json();
+}
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+let myRole = null;       // 'blue' | 'red'
+let myName = '';
+let roomCode = '';
+let selectedHero = null;
+let activeFilter = 'All';
+let activeFaction = 'All Factions';
+let timerVal = 45;
+let timerInterval = null;
+let fearlessPool = new Set(); // Heroes picked in previous games (fearless draft mode)
+let fearlessMode = false;     // Whether fearless draft is active
+let fearlessGameNum = 1;      // Current game number in fearless series
+let blueWins = 0;             // Best-of-3 series score
+let redWins = 0;              // Best-of-3 series score
+let seriesOver = false;       // True when someone reaches 2 wins
+let gameLogged = false;       // True after winner is logged for current game
+let skippedDraft = false;     // True if skip draft/formations was used (blocks winner logging)
+
+// Draft state (synced via storage)
+let draft = {
+  turn: 0,
+  blueBans:    [],
+  redBans:     [],
+  bluePicks:   [],
+  redPicks:    [],
+  blueName:    'Blue',
+  redName:     'Red',
+  done:        false,
+  // Formation phase
+  formPhase:   false,  // true when formation is active
+  formRound:   1,      // 1 = place 3, 2 = place 2
+  blueFormation: {},   // { tileId: heroName }
+  redFormation:  {},
+  blueLocked:  false,
+  redLocked:   false,
+  formRevealed: false
+};
+
+
+const HERO_IMG_BASE = 'hexes/unit/';
+function heroImg(name) {
+  return HERO_IMG_BASE + encodeURIComponent(name) + '.png';
+}
+
+// ═══════════════════════════════════════════════════════════
+// NORMALIZE — Firebase omits empty arrays; restore them
+// ═══════════════════════════════════════════════════════════
+function normalizeDraft(d) {
+  if (!d) return d;
+  d.blueBans      = d.blueBans      || [];
+  d.redBans       = d.redBans       || [];
+  d.bluePicks     = d.bluePicks     || [];
+  d.redPicks      = d.redPicks      || [];
+  d.blueFormation = d.blueFormation || {};
+  d.redFormation  = d.redFormation  || {};
+  d.blueFormationR1 = d.blueFormationR1 || {};
+  d.redFormationR1  = d.redFormationR1  || {};
+  d.blueLocked    = d.blueLocked    || false;
+  d.redLocked     = d.redLocked     || false;
+  d.round1Revealed = d.round1Revealed || false;
+  d.formRevealed  = d.formRevealed  || false;
+  d.formPhase     = d.formPhase     || false;
+  d.formRound     = d.formRound     || 1;
+  d.attackerRole  = d.attackerRole  || 'blue';
+  // Restore fearless pool from Firebase data
+  if (d.fearlessPool && Array.isArray(d.fearlessPool)) {
+    fearlessPool = new Set(d.fearlessPool);
+    fearlessMode = true;
+    fearlessGameNum = d.fearlessGameNum || 1;
+  }
+  // Series scores
+  if (d.blueWins !== undefined) blueWins = d.blueWins;
+  if (d.redWins !== undefined) redWins = d.redWins;
+  seriesOver = blueWins >= 2 || redWins >= 2;
+  // Sync skipped flag
+  if (d.skipped) skippedDraft = true;
+  return d;
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOBBY
+// ═══════════════════════════════════════════════════════════
+function pickRole(role) {
+  myRole = role;
+  document.getElementById('roleBlue').classList.toggle('selected', role==='blue');
+  document.getElementById('roleRed').classList.toggle('selected', role==='red');
+  document.getElementById('blueActions').style.display = role==='blue' ? 'block' : 'none';
+  document.getElementById('redActions').style.display  = role==='red'  ? 'block' : 'none';
+}
+
+async function createRoom() {
+  const name = document.getElementById('nameInput').value.trim();
+  if (!name) { toast('Enter your name first'); return; }
+  myName = name;
+  myRole = 'blue';
+
+  try {
+    const data = await api('/rooms/create', { playerName: name });
+    roomCode = data.roomCode;
+    sessionToken = data.token;
+    draft.blueName = name;
+    draft.turn = 0;
+
+    document.getElementById('lobbyCard').style.display = 'none';
+    document.getElementById('waitingCard').style.display = 'block';
+    document.getElementById('roomCodeDisplay').textContent = roomCode;
+    document.getElementById('topRoomCode').textContent = roomCode;
+
+    // Still use Firebase listener for opponent joining (read-only)
+    waitForFb(() => { pollForOpponent(); }, 30);
+  } catch (err) {
+    toast('Failed to create room');
+  }
+}
+
+async function joinRoom() {
+  const name = document.getElementById('nameInput').value.trim();
+  const code = document.getElementById('codeInput').value.trim().toUpperCase();
+  if (!name) { toast('Enter your name first'); return; }
+  if (!code || code.length < 4) { toast('Enter a valid room code'); return; }
+  myName = name;
+  myRole = 'red';
+
+  try {
+    const data = await api('/rooms/join', { playerName: name, roomCode: code });
+    roomCode = data.roomCode;
+    sessionToken = data.token;
+    draft = normalizeDraft(data.draft);
+    document.getElementById('topRoomCode').textContent = roomCode;
+    enterDraftScreen();
+  } catch (err) {
+    // Error already toasted by api()
+  }
+}
+
+let _opponentJoined = false;
+function pollForOpponent() {
+  // Use Firebase real-time listener — fires the instant red player joins
+  waitForFb(() => {
+    window._fbOn(roomCode, (d) => {
+      if (!_opponentJoined && d && d.redName && d.redName !== 'Red') {
+        _opponentJoined = true;
+        draft = normalizeDraft(d);
+        enterDraftScreen();
+      }
+    });
+  }, 20);
+  if (false) {
+    // Fallback polling (same-browser testing)
+    const interval = setInterval(() => {
+      loadDraft(roomCode, (d) => {
+        if (d && d.redName && d.redName !== 'Red') {
+          clearInterval(interval);
+          draft = d;
+          enterDraftScreen();
+        }
+      });
+    }, 1500);
+  }
+}
+
+function copyCode() {
+  navigator.clipboard.writeText(roomCode).then(() => toast('Code copied!'));
+}
+
+// ═══════════════════════════════════════════════════════════
+// STORAGE — Firebase Realtime Database
+// ═══════════════════════════════════════════════════════════
+function waitForFb(fn, retries) {
+  if (window._fbSet) { fn(); return; }
+  if (retries <= 0) { console.warn('Firebase not ready'); return; }
+  setTimeout(() => waitForFb(fn, retries - 1), 100);
+}
+
+function saveDraft() {
+  waitForFb(() => window._fbSet(roomCode, draft), 20);
+}
+
+function isRoomFull(d) {
+  return d && d.blueName && d.blueName !== 'Blue' &&
+             d.redName  && d.redName  !== 'Red';
+}
+
+function loadDraft(code, cb) {
+  waitForFb(() => window._fbGet(code, cb), 20);
+}
+
+// ═══════════════════════════════════════════════════════════
+// DRAFT SCREEN ENTRY
+// ═══════════════════════════════════════════════════════════
+function enterDraftScreen() {
+  showScreen('draftScreen');
+  // Request notification permission once on first entry
+  if (!notifPermissionAsked && 'Notification' in window && Notification.permission === 'default') {
+    notifPermissionAsked = true;
+    Notification.requestPermission();
+  }
+  // Defer to ensure screen is painted before we write into it
+  setTimeout(() => {
+    draft = normalizeDraft(draft);
+    buildFilterRow();
+    renderAll();
+    renderPool();
+    startTimer();
+    initChat();
+    startPresence();
+    // Extra safety re-render in case first pass was too early
+    setTimeout(renderPool, 400);
+    // Real-time listener via Firebase — fires instantly on any change
+    waitForFb(() => {
+      window._fbOn(roomCode, (d) => {
+        if (!d) return;
+
+        // GUARD: If we're on the result screen, ONLY handle score syncing and action votes.
+        // Never navigate away from the result screen unless an explicit action is being executed.
+        const _onResult = document.getElementById('resultScreen').classList.contains('active');
+        if (_onResult) {
+          draft = normalizeDraft(d);
+          // Sync series scores
+          if (d.blueWins !== undefined) blueWins = d.blueWins;
+          if (d.redWins !== undefined) redWins = d.redWins;
+          if (d.gameLogged) gameLogged = true;
+          renderSeriesScoreboard();
+          renderWinnerButtons();
+          renderActionButtons();
+          // Only allow action execution — nothing else
+          if (d.actionExecute) {
+            const action = d.actionExecute;
+            draft.actionExecute = null;
+            draft.actionVote = {};
+            executeAction(action);
+          }
+          return;
+        }
+
+        const changed = JSON.stringify(d) !== JSON.stringify(draft);
+
+        // Always process formation phase updates regardless of changed flag
+        // (local draft mutations before save cause false negatives)
+        draft = normalizeDraft(d);
+
+        // Handle action execution — both players agreed
+        if (d.actionExecute) {
+          const action = d.actionExecute;
+          // Clear the execute flag before acting
+          d.actionExecute = null;
+          d.actionVote = {};
+          draft.actionExecute = null;
+          draft.actionVote = {};
+          executeAction(action);
+          return;
+        }
+
+        if (draft.formPhase) {
+          const formActive = document.getElementById('formationScreen').classList.contains('active');
+          const voteActive = document.getElementById('mapVoteScreen').classList.contains('active');
+          if (d.selectedMap && !formActive) {
+            if (d.skipFormations) {
+              currentArena = d.selectedMap; formTileData = [...ArenaPresets[currentArena]]; skipFormations();
+            } else {
+              currentArena = d.selectedMap; formTileData = [...ArenaPresets[currentArena]]; startFormation();
+            }
+          } else if (formActive) {
+            syncFormation(d);
+          } else if (voteActive) {
+            const other = myRole==='blue' ? d.redVote : d.blueVote;
+            if (other) { const el = document.getElementById('mapVoteStatus'); if (el) el.textContent = 'Opponent voted for ' + other + '!'; }
+            if (d.attackerRole) { attackerRole = d.attackerRole; const res = document.getElementById('rolesResult'); if (res) res.textContent = attackerRole==='blue' ? '🔵 '+(d.blueName||'Blue')+' attacks · 🔴 '+(d.redName||'Red')+' defends' : '🔴 '+(d.redName||'Red')+' attacks · 🔵 '+(d.blueName||'Blue')+' defends'; }
+          } else {
+            showMapVote();
+          }
+          return;
+        }
+
+        if (!changed) return;
+
+        // Detect fearless draft restart from the other player
+        if (d.fearlessRestart && d.turn === 0 && !d.done && !d.formPhase) {
+          const draftActive = document.getElementById('draftScreen').classList.contains('active');
+          if (!draftActive) {
+            // Other player initiated fearless draft — re-enter draft screen
+            selectedHero = null;
+            lastNotifiedTurn = -1;
+            showScreen('draftScreen');
+            setTimeout(() => {
+              buildFilterRow();
+              renderAll();
+              renderPool();
+              startTimer();
+              updateFearlessIndicator();
+              setTimeout(renderPool, 400);
+            }, 50);
+            toast('⛔ Fearless Draft — Game ' + fearlessGameNum + '! Previously picked heroes are unavailable.');
+            return;
+          }
+        }
+
+        // Show opponent skip draft vote
+        const oppSkipDraft = myRole==='blue' ? d.redSkipDraft : d.blueSkipDraft;
+        if (oppSkipDraft && !d.done) {
+          const st = document.getElementById('skipDraftStatus');
+          if (st) st.textContent = 'Opponent wants to skip!';
+        }
+        renderAll();
+        renderPool();
+        resetTimer();
+      });
+    }, 20);
+  }, 50);
+}
+
+function syncDraft() {} // no-op: replaced by Firebase onValue listener
+
+// ═══════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════
+function renderAll() {
+  // Ensure arrays are always arrays (Firebase drops empty arrays)
+  draft = normalizeDraft(draft);
+  const t = SEQUENCE[draft.turn] || null;
+  const isMyTurn = t && t.side === myRole && !draft.done;
+  const phase = t ? t.phase : 'done';
+
+  // Phase badge
+  const pb = document.getElementById('phaseBadge');
+  pb.className = 'phase-badge';
+  if (phase==='ban')  pb.classList.add('phase-ban'),  pb.textContent='Ban Phase';
+  if (phase==='pick') pb.classList.add('phase-pick'), pb.textContent='Pick Phase';
+  if (!t)             pb.classList.add('phase-done'), pb.textContent='Draft Complete';
+
+  // Fearless badge
+  const fb = document.getElementById('fearlessBadge');
+  if (fb) {
+    if (fearlessPool.size > 0) {
+      fb.style.display = 'inline-block';
+      fb.textContent = '⛔ Fearless G' + fearlessGameNum;
+    } else {
+      fb.style.display = 'none';
+    }
+  }
+
+  // Turn indicator
+  const sideName = t ? (t.side==='blue' ? draft.blueName : draft.redName) : '—';
+  const actionTxt = t ? (phase==='ban' ? 'is banning' : 'is picking') : 'All done!';
+  document.getElementById('turnName').textContent = sideName;
+  document.getElementById('turnAction').textContent = actionTxt;
+
+  // Names & avatars
+  document.getElementById('blueName').textContent = draft.blueName || 'Blue';
+  document.getElementById('redName').textContent  = draft.redName  || 'Red';
+  document.getElementById('blueAvatar').textContent = (draft.blueName||'B')[0].toUpperCase();
+  document.getElementById('redAvatar').textContent  = (draft.redName ||'R')[0].toUpperCase();
+
+  // Turn banners
+  renderTurnBanner('blue', isMyTurn && myRole==='blue' && !draft.done, phase);
+  renderTurnBanner('red',  isMyTurn && myRole==='red'  && !draft.done, phase);
+
+  // Ban/pick slots
+  renderSlots('blue');
+  renderSlots('red');
+
+  // Counts
+  document.getElementById('blueBanCount').textContent  = `${draft.blueBans.length}/3`;
+  document.getElementById('redBanCount').textContent   = `${draft.redBans.length}/3`;
+  document.getElementById('bluePickCount').textContent = `${draft.bluePicks.length}/5`;
+  document.getElementById('redPickCount').textContent  = `${draft.redPicks.length}/5`;
+
+  // Hero pool
+  renderPool();
+
+  // Buttons
+  const banBtn  = document.getElementById('banBtn');
+  const pickBtn = document.getElementById('pickBtn');
+  banBtn.disabled  = !isMyTurn || phase!=='ban'  || !selectedHero;
+  pickBtn.disabled = !isMyTurn || phase!=='pick' || !selectedHero;
+
+  if (draft.done && !draft.formPhase) setTimeout(showResult, 800);
+}
+
+function renderTurnBanner(side, show, phase) {
+  const el = document.getElementById(side+'TurnBanner');
+  if (show) {
+    const action = phase==='ban' ? 'BAN a Hero' : 'PICK a Hero';
+    el.innerHTML = `<div class="my-turn-indicator">⚔ Your Turn — ${action}</div>`;
+  } else if (SEQUENCE[draft.turn] && SEQUENCE[draft.turn].side !== side && !draft.done) {
+    el.innerHTML = `<div class="not-turn-indicator">Waiting for opponent…</div>`;
+  } else {
+    el.innerHTML = '';
+  }
+}
+
+function renderSlots(side) {
+  const bans  = draft[side+'Bans'];
+  const picks = draft[side+'Picks'];
+  const heroMap = Object.fromEntries(HEROES.map(h=>[h.name,h]));
+
+  // Bans
+  const banEl = document.getElementById(side+'Bans');
+  let bHTML = '';
+  for (let i=0;i<3;i++) {
+    const h = bans[i] ? heroMap[bans[i]] : null;
+    bHTML += `<div class="ban-slot ${h?'filled':''}">
+      <span class="bs-em">${h?h.em:'🚫'}</span>
+      <span class="bs-name">${h?h.name:'Empty'}</span>
+      <span class="ban-x">${h?'✕':''}</span>
+    </div>`;
+  }
+  banEl.innerHTML = bHTML;
+
+  // Picks
+  const pickEl = document.getElementById(side+'Picks');
+  let pHTML = '';
+  // Highlight the next active pick slot
+  const t = SEQUENCE[draft.turn];
+  const isThisSideNext = t && t.phase==='pick' && t.side===side;
+  for (let i=0;i<5;i++) {
+    const h = picks[i] ? heroMap[picks[i]] : null;
+    const isActive = isThisSideNext && i===picks.length && myRole===side;
+    pHTML += `<div class="pick-slot ${h?'filled':''} ${isActive?'active-slot':''}">
+      <span class="ps-em">${h?h.em:'❓'}</span>
+      <div class="ps-info">
+        <div class="ps-name">${h?h.name:'Pick '+(i+1)}</div>
+        <div class="ps-role">${h?h.cls:'—'}</div>
+      </div>
+      <div class="pick-num">${i+1}</div>
+    </div>`;
+  }
+  pickEl.innerHTML = pHTML;
+}
+
+function buildFilterRow() {
+  const row = document.getElementById('filterRow');
+  const classRow = CLASSES.map(c=>
+    `<button class="fc ${c===activeFilter?'on':''}" onclick="setFilter('${c}',this)">${c}</button>`
+  ).join('');
+  const factionRow = FACTIONS.map(f=>
+    `<button class="fc ${f===activeFaction?'on':''}" style="font-size:8px" onclick="setFaction('${f}',this)">${f}</button>`
+  ).join('');
+  row.innerHTML = '<div style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px">'+classRow+'</div><div style="display:flex;gap:4px;flex-wrap:wrap">'+factionRow+'</div>';
+}
+
+function setFaction(f, el) {
+  activeFaction = f;
+  buildFilterRow();
+  renderPool();
+}
+
+function setFilter(cls, el) {
+  activeFilter = cls;
+  document.querySelectorAll('.fc').forEach(b=>b.classList.remove('on'));
+  el.classList.add('on');
+  renderPool();
+}
+
+function renderPool() {
+  const searchEl = document.getElementById('searchInput');
+  if (!searchEl) return;
+  const search = searchEl.value.toLowerCase();
+  const banned = new Set([...draft.blueBans, ...draft.redBans]);
+  const picked = new Set([...draft.bluePicks, ...draft.redPicks]);
+  const grid   = document.getElementById('heroGrid');
+  if (!grid) return;
+
+  const filtered = HEROES.filter(h => {
+    if (activeFilter !== 'All' && h.cls !== activeFilter) return false;
+    if (activeFaction !== 'All Factions' && h.faction !== activeFaction) return false;
+    if (search && !h.name.toLowerCase().includes(search) && !h.cls.toLowerCase().includes(search) && !h.faction.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  grid.innerHTML = filtered.map(h => {
+    const isBanned = banned.has(h.name);
+    const isPicked = picked.has(h.name);
+    const isFearless = fearlessPool.has(h.name);
+    const isSel    = selectedHero === h.name;
+    const cls = [
+      'hcard',
+      isBanned ? 'banned disabled' : '',
+      isPicked ? 'picked disabled' : '',
+      isFearless && !isBanned && !isPicked ? 'fearless-banned disabled' : '',
+      isSel    ? 'selected-preview' : '',
+    ].join(' ').trim();
+    return `<div class="${cls}" onclick="selectHero('${h.name}',${isBanned||isPicked||isFearless})">
+      <div class="hcard-em"><img src="${heroImg(h.name)}" alt="${h.name}" style="width:52px;height:52px;object-fit:cover;border-radius:50%;display:block" onerror="this.style.display='none';this.nextSibling.style.display='block'"><span style="display:none;font-size:24px">${h.em}</span></div>
+      <div class="hcard-name">${h.name}</div>
+      <div class="hcard-class">${h.cls} · ${h.faction.replace(' ','\u00a0')}</div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════════
+// HERO SELECT + ACTIONS
+// ═══════════════════════════════════════════════════════════
+function selectHero(name, disabled) {
+  if (disabled) return;
+  const t = SEQUENCE[draft.turn];
+  if (!t || t.side !== myRole || draft.done) { toast("It's not your turn"); return; }
+
+  const h = HEROES.find(x => x.name === name);
+  if (!h) return;
+
+  // Show the action modal
+  document.getElementById('hamEm').textContent   = h.em;
+  document.getElementById('hamName').textContent  = h.name;
+  document.getElementById('hamCls').textContent   = h.cls + ' · ' + h.faction;
+
+  const btns = document.getElementById('hamBtns');
+  btns.innerHTML = '';
+
+  if (t.phase === 'ban') {
+    const b = document.createElement('button');
+    b.className = 'ham-ban';
+    b.textContent = '✕ Ban';
+    b.onclick = () => { closeHamModal(); selectedHero = name; confirmBan(); };
+    btns.appendChild(b);
+  } else if (t.phase === 'pick') {
+    const p = document.createElement('button');
+    p.className = 'ham-pick';
+    p.textContent = '✓ Pick';
+    p.onclick = () => { closeHamModal(); selectedHero = name; confirmPick(); };
+    btns.appendChild(p);
+  } else {
+    return;
+  }
+
+  document.getElementById('hamOverlay').classList.add('open');
+}
+
+function closeHamModal() {
+  document.getElementById('hamOverlay').classList.remove('open');
+}
+
+function closeHam(e) {
+  if (e.target === document.getElementById('hamOverlay')) closeHamModal();
+}
+
+function confirmBan() {
+  if (!selectedHero) return;
+  const t = SEQUENCE[draft.turn];
+  if (!t || t.phase!=='ban' || t.side!==myRole) return;
+  draft[myRole+'Bans'].push(selectedHero);
+  selectedHero = null;
+  document.getElementById('previewArea').innerHTML = '<span class="preview-label">Click a hero to select</span>';
+  draft.turn++;
+  if (draft.turn >= SEQUENCE.length) draft.done = true;
+  saveDraft();
+  resetTimer();
+  renderAll();
+}
+
+function confirmPick() {
+  if (!selectedHero) return;
+  const t = SEQUENCE[draft.turn];
+  if (!t || t.phase!=='pick' || t.side!==myRole) return;
+  draft[myRole+'Picks'].push(selectedHero);
+  selectedHero = null;
+  document.getElementById('previewArea').innerHTML = '<span class="preview-label">Click a hero to select</span>';
+  draft.turn++;
+  if (draft.turn >= SEQUENCE.length) draft.done = true;
+  saveDraft();
+  resetTimer();
+  renderAll();
+}
+
+function advance() {
+  draft.turn++;
+  selectedHero = null;
+  document.getElementById('previewArea').innerHTML = '<span class="preview-label">Click a hero to select</span>';
+  if (draft.turn >= SEQUENCE.length) draft.done = true;
+  saveDraft();
+  resetTimer();
+  renderAll();
+}
+
+// ═══════════════════════════════════════════════════════════
+// TIMER
+// ═══════════════════════════════════════════════════════════
+// timer functions moved to bottom
+
+function autoAction(phase) {
+  const banned = new Set([...draft.blueBans, ...draft.redBans]);
+  const picked = new Set([...draft.bluePicks, ...draft.redPicks]);
+  const available = HEROES.filter(h => !banned.has(h.name) && !picked.has(h.name) && !fearlessPool.has(h.name));
+  if (!available.length) return;
+  const h = available[Math.floor(Math.random()*available.length)];
+  selectedHero = h.name;
+  toast(`⏱ Time's up! Auto-${phase}: ${h.name}`);
+  if (phase==='ban') confirmBan(); else confirmPick();
+}
+
+// ═══════════════════════════════════════════════════════════
+// TURN NOTIFICATION — sound + browser notification + visual
+// ═══════════════════════════════════════════════════════════
+let lastNotifiedTurn = -1;
+let notifPermissionAsked = false;
+function notifyMyTurn(phase) {
+  if (draft.turn === lastNotifiedTurn) return; // Don't double-notify same turn
+  lastNotifiedTurn = draft.turn;
+
+  const action = phase === 'ban' ? 'BAN' : 'PICK';
+
+  // 1. Play a notification sound (Web Audio API beep)
+  try {
+    const actx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = actx.createOscillator();
+    const gain = actx.createGain();
+    osc.connect(gain); gain.connect(actx.destination);
+    osc.type = 'sine';
+    // Two-tone chime
+    osc.frequency.setValueAtTime(660, actx.currentTime);
+    osc.frequency.setValueAtTime(880, actx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.3, actx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, actx.currentTime + 0.4);
+    osc.start(actx.currentTime);
+    osc.stop(actx.currentTime + 0.4);
+  } catch(e) { /* Audio not available */ }
+
+  // 2. Flash the topbar
+  const topbar = document.querySelector('.draft-topbar');
+  if (topbar) {
+    topbar.classList.remove('turn-flash');
+    void topbar.offsetWidth; // Force reflow
+    topbar.classList.add('turn-flash');
+    setTimeout(() => topbar.classList.remove('turn-flash'), 2000);
+  }
+
+  // 3. Show a floating notification banner
+  const existing = document.getElementById('turnNotifBanner');
+  if (existing) existing.remove();
+  const banner = document.createElement('div');
+  banner.id = 'turnNotifBanner';
+  banner.className = 'turn-notification-banner';
+  banner.textContent = `⚔ Your Turn — ${action} a Hero!`;
+  document.body.appendChild(banner);
+  setTimeout(() => { if (banner.parentNode) banner.remove(); }, 3200);
+
+  // 4. Browser tab notification (title flash)
+  flashTabTitle(`YOUR TURN — ${action}!`);
+
+  // 5. Browser push notification (only if already granted — never re-ask here)
+  if ('Notification' in window && Notification.permission === 'granted') {
+    new Notification('Esperia Duels', {
+      body: `It's your turn to ${action} a hero!`,
+      icon: 'data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚔</text></svg>',
+      tag: 'turn-notification'
+    });
+  }
+}
+
+let tabFlashInterval = null;
+const originalTitle = document.title;
+function flashTabTitle(msg) {
+  clearInterval(tabFlashInterval);
+  let on = true;
+  tabFlashInterval = setInterval(() => {
+    document.title = on ? msg : originalTitle;
+    on = !on;
+  }, 800);
+  // Stop flashing after 6 seconds or when user focuses tab
+  setTimeout(() => { clearInterval(tabFlashInterval); document.title = originalTitle; }, 6000);
+}
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden) {
+    clearInterval(tabFlashInterval);
+    document.title = originalTitle;
+  }
+});
+
+// ═══════════════════════════════════════════════════════════
+// RESULT
+// ═══════════════════════════════════════════════════════════
+function showResult() {
+  clearInterval(timerInterval);
+  draft.formPhase    = true;
+  draft.formRound    = 1;
+  draft.blueFormation = {};
+  draft.redFormation  = {};
+  draft.blueLocked   = false;
+  draft.redLocked    = false;
+  draft.formRevealed = false;
+  saveDraft();
+  showMapVote();
+}
+
+function showFinalResult() {
+  showScreen('resultScreen');
+  updateFearlessIndicator();
+  renderSeriesScoreboard();
+  renderWinnerButtons();
+  renderActionButtons();
+  const heroMap = Object.fromEntries(HEROES.map(h=>[h.name,h]));
+  const mkFormHero = (name, tile) => {
+    const h = heroMap[name];
+    if (!h) return '';
+    return `<div class="result-hero"><span class="rh-em">${h.em}</span><div><div class="rh-name">${h.name}</div><div class="rh-class">Tile ${tile}</div></div></div>`;
+  };
+  const mkHero = name => {
+    const h = heroMap[name];
+    return `<div class="result-hero"><span class="rh-em">${h.em}</span><div><div class="rh-name">${h.name}</div><div class="rh-class">${h.cls}</div></div></div>`;
+  };
+  const mkBan = name => {
+    const h = heroMap[name];
+    return `<div class="result-ban">✕ ${h.em} ${h.name}</div>`;
+  };
+  document.getElementById('resultTeams').innerHTML = `
+    <div class="result-team">
+      <div class="result-team-name" style="color:#6090ff">🔵 ${draft.blueName}</div>
+      ${draft.bluePicks.map(mkHero).join('')}
+      <div class="result-bans"><div class="result-bans-label">Banned</div>${draft.blueBans.map(mkBan).join('')}</div>
+    </div>
+    <div class="vs-badge">VS</div>
+    <div class="result-team">
+      <div class="result-team-name" style="color:#ff6090">🔴 ${draft.redName}</div>
+      ${draft.redPicks.map(mkHero).join('')}
+      <div class="result-bans"><div class="result-bans-label">Banned</div>${draft.redBans.map(mkBan).join('')}</div>
+    </div>`;
+}
+
+function newDraft() {
+  // Full reset — clears fearless pool and series scores
+  fearlessPool.clear();
+  fearlessMode = false;
+  fearlessGameNum = 1;
+  blueWins = 0;
+  redWins = 0;
+  seriesOver = false;
+  gameLogged = false;
+  if (window._fbSet) window._fbSet(roomCode, null);
+  location.reload();
+}
+
+function startFearlessDraft() {
+  // Collect all PICKED heroes (not banned) from this game
+  const allPicked = [...(draft.bluePicks || []), ...(draft.redPicks || [])];
+  allPicked.forEach(name => fearlessPool.add(name));
+  fearlessMode = true;
+  fearlessGameNum++;
+  gameLogged = false;
+
+  // Check if enough heroes remain for another game (need at least 10 picks + 6 bans = 16)
+  const remaining = HEROES.filter(h => !fearlessPool.has(h.name)).length;
+  if (remaining < 16) {
+    toast('Not enough heroes remaining for fearless draft! Need 16, have ' + remaining);
+    return;
+  }
+
+  // Sync fearless state to Firebase so both players get it
+  const fearlessData = {
+    fearlessPool: Array.from(fearlessPool),
+    fearlessGameNum: fearlessGameNum
+  };
+
+  // Reset draft state but keep names, room, and fearless data
+  const savedBlueName = draft.blueName;
+  const savedRedName = draft.redName;
+  
+  draft = {
+    turn: 0,
+    blueBans: [],
+    redBans: [],
+    bluePicks: [],
+    redPicks: [],
+    blueName: savedBlueName,
+    redName: savedRedName,
+    done: false,
+    formPhase: false,
+    formRound: 1,
+    blueFormation: {},
+    redFormation: {},
+    blueLocked: false,
+    redLocked: false,
+    formRevealed: false,
+    // Carry fearless data in the draft for Firebase sync
+    fearlessPool: Array.from(fearlessPool),
+    fearlessGameNum: fearlessGameNum,
+    // Carry series scores
+    blueWins: blueWins,
+    redWins: redWins,
+    // Signal to the other player's Firebase listener to re-enter draft
+    fearlessRestart: Date.now()
+  };
+
+  saveDraft();
+
+  // Re-enter draft screen
+  selectedHero = null;
+  lastNotifiedTurn = -1;
+  showScreen('draftScreen');
+  setTimeout(() => {
+    buildFilterRow();
+    renderAll();
+    renderPool();
+    startTimer();
+    updateFearlessIndicator();
+    setTimeout(renderPool, 400);
+  }, 50);
+  
+  toast('⛔ Fearless Draft — Game ' + fearlessGameNum + '! Previously picked heroes are unavailable.');
+}
+
+function updateFearlessIndicator() {
+  const indicator = document.getElementById('fearlessIndicator');
+  const numEl = document.getElementById('fearlessGameNum');
+  const listEl = document.getElementById('fearlessHeroList');
+  if (!indicator) return;
+
+  if (fearlessPool.size > 0) {
+    indicator.style.display = 'flex';
+    indicator.style.flexDirection = 'column';
+    indicator.style.alignItems = 'center';
+    indicator.style.gap = '8px';
+    if (numEl) numEl.textContent = fearlessGameNum;
+    if (listEl) {
+      const heroMap = Object.fromEntries(HEROES.map(h => [h.name, h]));
+      listEl.innerHTML = Array.from(fearlessPool).map(name => {
+        const h = heroMap[name];
+        return h ? `<span class="fearless-hero-chip">${h.em} ${h.name}</span>` : '';
+      }).join('');
+    }
+  } else {
+    indicator.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SERIES SCOREBOARD & WINNER LOGGING
+// ═══════════════════════════════════════════════════════════
+function renderSeriesScoreboard() {
+  const bl = document.getElementById('seriesBlueLabel');
+  const rl = document.getElementById('seriesRedLabel');
+  const bs = document.getElementById('seriesBlueScore');
+  const rs = document.getElementById('seriesRedScore');
+  if (bl) bl.textContent = draft.blueName || 'Blue';
+  if (rl) rl.textContent = draft.redName || 'Red';
+  if (bs) bs.textContent = blueWins;
+  if (rs) rs.textContent = redWins;
+
+  // Sync scores from Firebase if present
+  if (draft.blueWins !== undefined) blueWins = draft.blueWins;
+  if (draft.redWins !== undefined) redWins = draft.redWins;
+  if (bs) bs.textContent = blueWins;
+  if (rs) rs.textContent = redWins;
+
+  // Series winner banner
+  const banner = document.getElementById('seriesWinnerBanner');
+  if (!banner) return;
+  if (blueWins >= 2 || redWins >= 2) {
+    seriesOver = true;
+    const winnerName = blueWins >= 2 ? (draft.blueName || 'Blue') : (draft.redName || 'Red');
+    banner.style.display = 'block';
+    banner.innerHTML = '<div class="series-winner-banner"><div class="series-winner-text">👑 ' + winnerName + ' WINS!</div><div class="series-winner-sub">Series concluded ' + blueWins + ' – ' + redWins + '</div></div>';
+  } else {
+    banner.style.display = 'none';
+    seriesOver = false;
+  }
+}
+
+function renderWinnerButtons() {
+  const container = document.getElementById('winnerButtons');
+  const status = document.getElementById('winnerStatus');
+  const section = document.getElementById('winnerSection');
+  if (!container) return;
+
+  // Sync gameLogged from Firebase
+  if (draft.gameLogged) gameLogged = true;
+
+  // Hide entire section if series is over
+  if (seriesOver) {
+    if (section) section.style.display = 'none';
+    return;
+  }
+  if (section) section.style.display = 'block';
+
+  // If game already logged, show confirmation instead of buttons
+  if (gameLogged) {
+    container.innerHTML = '';
+    if (status) {
+      status.textContent = '✓ Result logged — choose next action below';
+      status.style.color = 'var(--teal)';
+    }
+    return;
+  }
+
+  // If draft was skipped, show notice instead of buttons
+  if (skippedDraft) {
+    container.innerHTML = '';
+    if (status) {
+      status.textContent = 'Skipped/test draft — results cannot be logged';
+      status.style.color = 'var(--text3)';
+    }
+    return;
+  }
+
+  // Only host (blue side) can log winners
+  if (myRole === 'blue') {
+    container.innerHTML = `
+      <button class="btn" id="blueWonBtn"
+              style="flex:1;background:#2c5ff2;color:white;border:none;padding:14px;font-weight:bold;border-radius:8px;cursor:pointer"
+              onclick="logWinner('Blue')">
+          🟦 Blue Won
+      </button>
+      <button class="btn" id="redWonBtn"
+              style="flex:1;background:#f22c2c;color:white;border:none;padding:14px;font-weight:bold;border-radius:8px;cursor:pointer"
+              onclick="logWinner('Red')">
+          🟥 Red Won
+      </button>`;
+    if (status) status.textContent = '';
+  } else {
+    container.innerHTML = '';
+    if (status) {
+      status.textContent = 'Waiting for host to log the match result...';
+      status.style.color = 'var(--text3)';
+    }
+  }
+}
+
+async function logWinner(winnerColor) {
+  if (myRole !== 'blue') { toast('Only the host can log results'); return; }
+  if (seriesOver) { toast('Series is already over!'); return; }
+  if (gameLogged) { toast('Already logged this game — start next game to continue'); return; }
+  if (skippedDraft) { toast('Cannot log results for skipped/test drafts'); return; }
+
+  try {
+    const data = await api('/match/winner', { roomCode, winnerColor });
+    blueWins = data.blueWins;
+    redWins = data.redWins;
+    gameLogged = true;
+    seriesOver = data.seriesOver;
+
+    toast('🏆 ' + data.winnerName + ' wins! (' + blueWins + ' – ' + redWins + ')');
+    renderSeriesScoreboard();
+    renderWinnerButtons();
+    renderActionButtons();
+  } catch (err) {
+    console.error('Log winner failed:', err);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// POST-GAME ACTION VOTING — requires both players to agree
+// ═══════════════════════════════════════════════════════════
+function renderActionButtons() {
+  const mapBtn = document.getElementById('voteMapBtn');
+  const fearBtn = document.getElementById('voteFearlessBtn');
+  const newBtn = document.getElementById('voteNewDraftBtn');
+  const status = document.getElementById('actionVoteStatus');
+  const actionsDiv = document.getElementById('postGameActions');
+
+  if (!actionsDiv) return;
+
+  // If series is over, only show New Draft (full reset)
+  if (seriesOver) {
+    if (mapBtn) mapBtn.style.display = 'none';
+    if (fearBtn) fearBtn.style.display = 'none';
+    if (newBtn) {
+      newBtn.style.display = 'block';
+      newBtn.textContent = '🔄 New Series';
+      newBtn.onclick = () => voteAction('newdraft');
+    }
+  } else {
+    if (mapBtn) mapBtn.style.display = 'block';
+    if (fearBtn) fearBtn.style.display = 'block';
+    if (newBtn) { newBtn.style.display = 'block'; newBtn.textContent = '🔄 New Draft'; }
+  }
+
+  // Reset vote labels
+  if (mapBtn) mapBtn.textContent = draft.actionVote && draft.actionVote[myRole] === 'map' ? '✓ 🗺️ Map' : '🗺️ Map';
+  if (fearBtn) fearBtn.textContent = draft.actionVote && draft.actionVote[myRole] === 'fearless' ? '✓ ⛔ Fearless' : '⛔ Fearless';
+  if (newBtn) {
+    const label = seriesOver ? 'New Series' : 'New Draft';
+    newBtn.textContent = draft.actionVote && draft.actionVote[myRole] === 'newdraft' ? '✓ 🔄 ' + label : '🔄 ' + label;
+  }
+
+  // Show vote status
+  if (status && draft.actionVote) {
+    const myVote = draft.actionVote[myRole];
+    const oppRole = myRole === 'blue' ? 'red' : 'blue';
+    const oppVote = draft.actionVote[oppRole];
+    if (myVote && !oppVote) {
+      status.textContent = 'You voted — waiting for opponent...';
+      status.className = 'vote-status has-vote';
+    } else if (!myVote && oppVote) {
+      status.textContent = 'Opponent voted for ' + oppVote + ' — click to agree!';
+      status.className = 'vote-status has-vote';
+    } else if (!myVote && !oppVote) {
+      status.textContent = 'Both players must agree to continue';
+      status.className = 'vote-status';
+    }
+  } else if (status) {
+    status.textContent = 'Both players must agree to continue';
+    status.className = 'vote-status';
+  }
+}
+
+async function voteAction(action) {
+  // Solo mode — execute immediately
+  if (!roomCode || !draft.redName || draft.redName === 'Red') {
+    executeAction(action);
+    return;
+  }
+
+  try {
+    const data = await api('/draft/vote', { roomCode, action });
+    if (data.executed) {
+      toast('Both agreed — starting ' + action + '!');
+    } else {
+      toast('Vote cast — waiting for opponent');
+    }
+  } catch (err) {
+    console.error('Vote failed:', err);
+  }
+}
+
+function executeAction(action) {
+  if (action === 'map') {
+    useAnotherMap();
+  } else if (action === 'fearless') {
+    startFearlessDraft();
+  } else if (action === 'newdraft') {
+    newDraft();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// DISCONNECT DETECTION
+// ═══════════════════════════════════════════════════════════
+let presenceStarted = false;
+let opponentOnline = true;
+
+function startPresence() {
+  if (presenceStarted || !roomCode || !myRole) return;
+  presenceStarted = true;
+
+  waitForFb(() => {
+    if (!window._fbPresence) return;
+
+    // Start my heartbeat
+    window._fbPresence.start(roomCode, myRole);
+
+    // Listen for opponent's presence
+    const oppRole = myRole === 'blue' ? 'red' : 'blue';
+    window._fbPresence.listen(roomCode, oppRole, (data) => {
+      if (!data) return; // Opponent hasn't connected yet
+      const wasOnline = opponentOnline;
+      opponentOnline = data.online === true;
+
+      // Only show disconnect if they WERE online and now aren't
+      // and we're past the lobby (draft or later screens)
+      if (wasOnline && !opponentOnline) {
+        const onLobby = document.getElementById('lobbyScreen').classList.contains('active');
+        if (!onLobby) {
+          showDisconnect();
+        }
+      }
+    });
+  }, 30);
+}
+
+function showDisconnect() {
+  const oppName = myRole === 'blue' ? (draft.redName || 'Red') : (draft.blueName || 'Blue');
+  const overlay = document.getElementById('disconnectOverlay');
+  const msg = document.getElementById('disconnectMsg');
+  if (overlay) overlay.classList.add('open');
+  if (msg) msg.textContent = oppName + ' has disconnected from the room.';
+}
+
+function dismissDisconnect() {
+  const overlay = document.getElementById('disconnectOverlay');
+  if (overlay) overlay.classList.remove('open');
+}
+
+function backToLobby() {
+  dismissDisconnect();
+  clearInterval(timerInterval);
+  presenceStarted = false;
+  opponentOnline = true;
+  location.reload();
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+let toastTimer2;
+function toast(msg) {
+  clearTimeout(toastTimer2);
+  let el = document.getElementById('toastEl');
+  if (!el) { el = document.createElement('div'); el.id='toastEl'; el.className='toast'; document.body.appendChild(el); }
+  el.textContent = msg;
+  el.style.display = 'block';
+  toastTimer2 = setTimeout(()=>{ el.style.display='none'; }, 2800);
+}
+
+// ═══════════════════════════════════════════════════════════
+// CHAT
+// ═══════════════════════════════════════════════════════════
+// CHAT — ID-based dedup fixes Firebase double-fire bug
+// ═══════════════════════════════════════════════════════════
+let chatOpen = false;
+let unreadCount = 0;
+let chatInitialized = false;
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  const panel = document.getElementById('chatPanel');
+  const icon  = document.getElementById('chatToggleIcon');
+  panel.classList.toggle('collapsed', !chatOpen);
+  icon.textContent = chatOpen ? '▼' : '▲';
+  if (chatOpen) {
+    unreadCount = 0;
+    const badge = document.getElementById('chatUnread');
+    if (badge) { badge.textContent = '0'; badge.classList.remove('show'); }
+    scrollChat();
+  }
+}
+
+function scrollChat() {
+  const el = document.getElementById('chatMessages');
+  if (el) el.scrollTop = el.scrollHeight;
+}
+
+function sendChatMsg() {
+  const input = document.getElementById('chatInput');
+  const text  = (input.value || '').trim();
+  if (!text || !roomCode || !myName) return;
+  const color = myRole === 'blue' ? '#3060ff' : '#ff3060';
+  input.value = '';
+  input.focus();
+  waitForFb(() => {
+    if (window._fbChat) window._fbChat.send(roomCode, { name: myName, text, color, role: myRole });
+  }, 30);
+}
+
+function initChat() {
+  if (chatInitialized || !roomCode) return;
+  chatInitialized = true;
+  const panel = document.getElementById('chatPanel');
+  if (panel) panel.style.display = 'flex';
+  waitForFb(() => {
+    if (!window._fbChat) return;
+    // onChildAdded fires once per message — cb receives a single msg object
+    window._fbChat.listen(roomCode, function(msg) {
+      appendMsg(msg);
+    });
+  }, 30);
+}
+
+function appendMsg(msg) {
+  const container = document.getElementById('chatMessages');
+  if (!container) return;
+  const wasAtBottom = container.scrollHeight - container.clientHeight <= container.scrollTop + 40;
+
+  if (!chatOpen) {
+    unreadCount++;
+    const badge = document.getElementById('chatUnread');
+    if (badge) { badge.textContent = unreadCount; badge.classList.add('show'); }
+  }
+
+  const isMe = msg.role === myRole;
+  const init = (msg.name || '?')[0].toUpperCase();
+  const div = document.createElement('div');
+  div.className = 'chat-msg ' + (isMe ? 'mine' : 'theirs');
+  div.innerHTML =
+    '<div class="chat-avatar" style="background:' + (msg.color || '#888') + '">' + init + '</div>' +
+    '<div>' +
+      '<div class="chat-msg-name">' + escHtml(msg.name) + '</div>' +
+      '<div class="chat-bubble">' + escHtml(msg.text) + '</div>' +
+    '</div>';
+  container.appendChild(div);
+  if (wasAtBottom || chatOpen) scrollChat();
+}
+
+function escHtml(t) {
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ═══════════════════════════════════════════════════════════
+// TIMER — fixed: resets properly, opponent timer resets on sync
+// ═══════════════════════════════════════════════════════════
+function startTimer() { resetTimer(); }
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerVal = 45;
+  const el = document.getElementById('timerDisplay');
+  if (!el) return;
+  el.textContent = timerVal;
+  el.classList.remove('urgent');
+  if (draft.done) return;
+
+  // Notify the player if it's now their turn
+  const t = SEQUENCE[draft.turn];
+  if (t && t.side === myRole && !draft.done) {
+    notifyMyTurn(t.phase);
+  }
+
+  timerInterval = setInterval(() => {
+    timerVal--;
+    el.textContent = Math.max(0, timerVal);
+    if (timerVal <= 10) el.classList.add('urgent');
+    else el.classList.remove('urgent');
+    if (timerVal <= 0) {
+      clearInterval(timerInterval);
+      const t = SEQUENCE[draft.turn];
+      if (t && t.side === myRole && !draft.done) {
+        autoAction(t.phase);
+      }
+      // If it's opponent's turn and they haven't acted, just wait —
+      // their client will fire the auto-action on their end
+    }
+  }, 1000);
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// ARENA PRESETS + FORMATION PHASE
+// ═══════════════════════════════════════════════════════════
+const ArenaPresets = {
+  'Arena I':   [-1,-1,0,-1,-1,-1,-1,0,0,-1,-1,-1,-1,0,0,0,-1,-1,-1,0,0,0,0,0,0,0,1,1,1,0,0,0,1,1,1,1,0,0,1,1,1,1,0,1,1],
+  'Arena II':  [-1,-1,-3,-1,-1,-1,-1,-3,-3,-3,-3,-1,-1,0,0,0,0,-1,-1,0,0,0,0,0,0,0,1,1,0,0,0,0,1,1,-3,-3,-3,-3,1,1,1,1,-3,1,1],
+  'Arena III': [0,-1,0,0,0,-1,-1,0,-3,-3,-1,-1,-1,1,-3,0,-1,-1,-3,1,-3,0,0,0,-3,-1,-3,1,1,0,-3,-1,1,1,1,-3,-3,0,1,1,0,0,0,1,0],
+  'Arena IV':  [-1,-1,0,-1,-1,-1,0,1,0,0,-1,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,0,0,1,0,0,-1,0,1,1,1,0,1,1],
+  'Arena V':   [-1,-1,-1,-1,0,0,-1,-1,0,-3,0,0,-1,1,0,-3,-1,-3,-1,1,0,-3,0,-3,0,-1,1,-3,1,-3,0,-1,1,0,0,-3,0,1,1,0,0,1,1,1,1],
+};
+
+const TIP2 = [43,45,35,38,40,42,44,28,31,34,37,39,41,21,24,27,30,33,36,14,17,20,23,26,29,32,10,13,16,19,22,25,5,7,9,12,15,18,2,4,6,8,11,1,3];
+const FormTL = [{n:2,pl:60},{n:5,pl:30},{n:6,pl:20},{n:6,pl:10},{n:7,pl:0},{n:6,pl:10},{n:6,pl:0},{n:5,pl:10},{n:2,pl:0}];
+const FW=53, FH=FW*(20/18), FR=FW/Math.sqrt(3);
+const FVS = FW * 1.000;  // vstep mult=1.0
+const FMT = -8;          // MT overlap
+const FPL = 2.6;         // PL unit
+
+let currentArena = 'Arena I';
+let formTileData  = [...ArenaPresets['Arena I']];
+let formSelHero   = null;
+let myVote        = null;
+let attackerRole  = 'blue'; // 'blue' or 'red' — who attacks (bottom tiles)
+
+// ── Map vote ────────────────────────────────────────────────
+function showMapVote() {
+  showScreen('mapVoteScreen');
+  myVote = null;
+  renderVoteBtns();
+}
+
+function renderVoteBtns() {
+  const c = document.getElementById('mapVoteButtons');
+  if (!c) return;
+  c.innerHTML = '';
+  Object.keys(ArenaPresets).forEach(name => {
+    const btn = document.createElement('button');
+    btn.className = 'btn ' + (myVote === name ? 'btn-gold' : 'btn-ghost');
+    btn.style.cssText = 'width:auto;padding:9px 18px;font-size:11px';
+    btn.textContent = name;
+    btn.onclick = () => castVote(name);
+    c.appendChild(btn);
+  });
+}
+
+function castVote(name) {
+  myVote = name;
+  renderVoteBtns();
+  document.getElementById('mapVoteResult').textContent = 'You voted: ' + name;
+
+  // Solo / skip-test mode
+  if (!roomCode || !draft.redName || draft.redName === 'Red') {
+    currentArena = name;
+    formTileData = [...ArenaPresets[name]];
+    document.getElementById('mapVoteResult').textContent = 'Arena selected: ' + name + '!';
+    setTimeout(() => startFormation(), 600);
+    return;
+  }
+
+  document.getElementById('mapVoteStatus').textContent = 'Waiting for opponent...';
+  const vKey = myRole === 'blue' ? 'blueVote' : 'redVote';
+  waitForFb(() => {
+    window._fbGet(roomCode, (d) => {
+      if (!d) return;
+      d[vKey] = name;
+      const other = myRole === 'blue' ? d.redVote : d.blueVote;
+      if (other) {
+        // Both voted — pick winner and write to Firebase ONCE
+        // Only write selectedMap, don't call startFormation() locally —
+        // the Firebase listener will fire on both clients and call startFormation
+        const winner = other === name ? name
+          : Object.keys(ArenaPresets)[Math.floor(Math.random() * Object.keys(ArenaPresets).length)];
+        d.selectedMap = winner;
+        window._fbSet(roomCode, d);
+      } else {
+        window._fbSet(roomCode, d);
+      }
+    });
+  }, 20);
+}
+
+function coinFlipRoles() {
+  // Anyone can click — generates result immediately and syncs to both via Firebase
+  const flip = Math.random() < 0.5 ? 'blue' : 'red';
+  attackerRole = flip;
+
+  const applyFlip = (d) => {
+    const res = document.getElementById('rolesResult');
+    const bn = (d && d.blueName) || draft.blueName || 'Blue';
+    const rn = (d && d.redName)  || draft.redName  || 'Red';
+    if (res) res.textContent = flip === 'blue'
+      ? '🔵 ' + bn + ' attacks · 🔴 ' + rn + ' defends'
+      : '🔴 ' + rn + ' attacks · 🔵 ' + bn + ' defends';
+  };
+
+  // Solo mode
+  if (!roomCode || !draft.redName || draft.redName === 'Red') {
+    applyFlip(null); return;
+  }
+
+  waitForFb(() => {
+    window._fbGet(roomCode, (d) => {
+      if (!d) return;
+      d.attackerRole = flip;
+      applyFlip(d);
+      window._fbSet(roomCode, d);
+    });
+  }, 20);
+}
+
+function randomizeMap() {
+  const keys = Object.keys(ArenaPresets);
+  castVote(keys[Math.floor(Math.random() * keys.length)]);
+}
+
+function voteSkipDraft() {
+  const btn = document.getElementById('skipDraftBtn');
+  const stat = document.getElementById('skipDraftStatus');
+
+  // Solo mode — skip instantly
+  if (!roomCode || !draft.redName || draft.blueName === draft.redName) {
+    skipToDraft(); return;
+  }
+
+  if (btn) { btn.disabled = true; btn.textContent = '✓ Vote Cast'; }
+  if (stat) stat.textContent = 'Waiting for opponent to agree...';
+
+  // Write my vote to Firebase, only execute when both agree
+  const voteKey = myRole === 'blue' ? 'blueSkipDraft' : 'redSkipDraft';
+  waitForFb(() => {
+    window._fbGet(roomCode, (d) => {
+      if (!d) return;
+      d[voteKey] = true;
+      const otherVote = myRole === 'blue' ? d.redSkipDraft : d.blueSkipDraft;
+      if (otherVote) {
+        // Both agreed — execute skip
+        skippedDraft = true;
+        const shuffled = [...HEROES].filter(h => !fearlessPool.has(h.name)).sort(() => Math.random() - 0.5);
+        d.bluePicks = shuffled.slice(0, 5).map(h => h.name);
+        d.redPicks  = shuffled.slice(5, 10).map(h => h.name);
+        d.blueBans  = shuffled.slice(10, 13).map(h => h.name);
+        d.redBans   = shuffled.slice(13, 16).map(h => h.name);
+        d.done = true;
+        d.skipped = true;
+        d.formPhase = true; d.formRound = 1;
+        d.blueFormation = {}; d.redFormation = {};
+        d.blueLocked = false; d.redLocked = false; d.formRevealed = false;
+      }
+      window._fbSet(roomCode, d);
+    });
+  }, 20);
+}
+
+function voteSkipFormations() {
+  const btn  = document.getElementById('skipFormBtn');
+  const stat = document.getElementById('skipFormStatus');
+  if (btn) { btn.disabled = true; btn.textContent = '✓ Skipping...'; }
+
+  // Solo mode
+  if (!roomCode || !draft.redName || draft.redName === 'Red') {
+    skipFormations(); return;
+  }
+
+  // Anyone clicks — immediately write to Firebase, listener triggers both sides
+  waitForFb(() => {
+    window._fbGet(roomCode, (d) => {
+      if (!d) return;
+      const arenaKeys = Object.keys(ArenaPresets);
+      d.selectedMap = d.selectedMap || arenaKeys[Math.floor(Math.random() * arenaKeys.length)];
+      d.skipFormations = true;
+      d.formPhase = true;
+      window._fbSet(roomCode, d);
+    });
+  }, 20);
+}
+
+function skipFormations() {
+  skippedDraft = true;
+  const arenaKeys = Object.keys(ArenaPresets);
+  const arena = currentArena || arenaKeys[Math.floor(Math.random() * arenaKeys.length)];
+  currentArena = arena;
+  formTileData = [...ArenaPresets[arena]];
+  if (draft.attackerRole) attackerRole = draft.attackerRole;
+
+  // Attacker uses bottom tiles (state=1/2), defender uses top (state=-1)
+  const attackerTiles  = formTileData.map((s,i)=>({s,i})).filter(({s})=>s===1||s===2).map(({i})=>i);
+  const defenderTiles  = formTileData.map((s,i)=>({s,i})).filter(({s})=>s===-1).map(({i})=>i);
+
+  const blueIsAttacker = attackerRole === 'blue';
+  const myTiles  = blueIsAttacker ? attackerTiles : defenderTiles;
+  const oppTiles = blueIsAttacker ? defenderTiles : attackerTiles;
+
+  const bluePicks = [...(draft.bluePicks||[])].sort(()=>Math.random()-0.5);
+  const redPicks  = [...(draft.redPicks||[])].sort(()=>Math.random()-0.5);
+  const shuffledBlue = [...myTiles].sort(()=>Math.random()-0.5);
+  const shuffledRed  = [...oppTiles].sort(()=>Math.random()-0.5);
+
+  draft.blueFormation = {};
+  draft.redFormation  = {};
+  bluePicks.slice(0,5).forEach((name,i)=>{ if(shuffledBlue[i]!==undefined) draft.blueFormation[shuffledBlue[i]]=name; });
+  redPicks.slice(0,5).forEach((name,i)=>{ if(shuffledRed[i]!==undefined) draft.redFormation[shuffledRed[i]]=name; });
+
+  draft.blueFormationR1 = {}; draft.redFormationR1 = {};
+  draft.blueLocked   = true;
+  draft.redLocked    = true;
+  draft.formRound    = 2;
+  draft.formRevealed = true;
+  saveDraft();
+  startFormation();
+}
+
+function startFormation() {
+  if (draft.attackerRole) attackerRole = draft.attackerRole;
+  showScreen('formationScreen');
+  document.getElementById('formRoundBadge').textContent = 'Round 1 — Place 3';
+  document.getElementById('formStatus').textContent = 'Select a hero, then tap a tile';
+  setTimeout(() => renderFormation(), 50);
+}
+
+// ── Hex grid ────────────────────────────────────────────────
+function buildFormHexes() {
+  const hexes = [];
+  let ai = 0;
+  FormTL.forEach(({n, pl}, row) => {
+    const offX = pl * FPL, cy = row * FVS + row * FMT + FH / 2;
+    for (let c = 0; c < n; c++) {
+      hexes.push({ai, pos: TIP2[ai], state: formTileData[ai], cx: offX + c * FW + FW / 2, cy});
+      ai++;
+    }
+  });
+  const allCX = hexes.map(h => h.cx);
+  const gMin = Math.min(...allCX), gMax = Math.max(...allCX);
+  hexes.forEach(h => { h.reflCX = gMin + gMax - h.cx; });
+  hexes.forEach((h, i) => { const mi = 44 - i; h.mCX = (mi >= 0 && mi < 45) ? hexes[mi].reflCX : h.cx; });
+  return hexes;
+}
+
+function fPts(cx, cy, r) {
+  return Array.from({length: 6}, (_, i) => {
+    const a = Math.PI / 3 * i + Math.PI / 6;
+    return (cx + r * Math.cos(a)).toFixed(1) + ',' + (cy + r * Math.sin(a)).toFixed(1);
+  }).join(' ');
+}
+
+function fCX(h) { return h.ai >= 25 ? h.mCX : h.cx; }
+
+function renderFormHexGrid() {
+  const svg = document.getElementById('hexSvgForm');
+  if (!svg) return;
+  svg.innerHTML = '';
+  const all = buildFormHexes();
+  const vis = all.filter(h => h.state !== 0);
+  if (!vis.length) return;
+  const cxs = vis.map(h => fCX(h)), cys = vis.map(h => h.cy);
+  const minX = Math.min(...cxs) - FW/2 - 1, maxX = Math.max(...cxs) + FW/2 + 1;
+  const minY = Math.min(...cys) - FH/2 - 1, maxY = Math.max(...cys) + FH/2 + 1;
+  svg.setAttribute('width', Math.ceil(maxX - minX));
+  svg.setAttribute('height', Math.ceil(maxY - minY));
+  svg.setAttribute('viewBox', minX + ' ' + minY + ' ' + (maxX - minX) + ' ' + (maxY - minY));
+
+  const myForm   = myRole === 'blue' ? (draft.blueFormation || {}) : (draft.redFormation || {});
+  const myFormR1 = myRole === 'blue' ? (draft.blueFormationR1 || {}) : (draft.redFormationR1 || {});
+  const oppFormFull = myRole === 'blue' ? (draft.redFormation || {}) : (draft.blueFormation || {});
+  const oppFormR1   = myRole === 'blue' ? (draft.redFormationR1 || {}) : (draft.blueFormationR1 || {});
+  const oppForm  = draft.formRevealed ? oppFormFull : draft.round1Revealed ? oppFormR1 : {};
+  const heroMap  = Object.fromEntries(HEROES.map(h => [h.name, h]));
+  const myLocked = myRole === 'blue' ? draft.blueLocked : draft.redLocked;
+
+  all.forEach(h => {
+    if (h.state === 0) return;
+    const {ai, pos, state} = h, cx = fCX(h), cy = h.cy;
+    // Attacker uses bottom tiles (state=1/2), defender uses top (state=-1)
+    const iAmAttacker = myRole === (draft.attackerRole || 'blue');
+    const isMyTile  = iAmAttacker ? (state === 1 || state === 2) : (state === -1);
+    const isOppTile = iAmAttacker ? (state === -1) : (state === 1 || state === 2);
+    const isObs     = state === -2 || state === -3;
+    const hero = isMyTile  && myForm[ai]  ? heroMap[myForm[ai]]  : null;
+    const eH   = isOppTile && (draft.formRevealed ? oppFormFull : draft.round1Revealed ? oppFormR1 : null)?.[ai] ? heroMap[(draft.formRevealed ? oppFormFull : oppFormR1)[ai]] : null;
+    const isR1Locked = isMyTile && hero && myFormR1[ai]; // placed in round 1, can't move
+    const click = isMyTile && !myLocked && !draft.formRevealed && !isR1Locked;
+
+    let fill, stroke, sw;
+    if (isMyTile)  { fill = hero ? (isR1Locked ? '#8ab0d4' : '#b5d4f4') : '#e6f1fb'; stroke = formSelHero && !hero && click ? '#0c447c' : '#378add'; sw = formSelHero && !hero && click ? 2.5 : 1.5; }
+    else if (isOppTile) { fill = eH ? '#f7c1c1' : '#fcebeb'; stroke = '#e24b4a'; sw = 1.5; }
+    else { fill = 'rgba(255,255,255,0.04)'; stroke = 'rgba(255,255,255,0.15)'; sw = 1; }
+
+    const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+    g.style.cursor = click ? 'pointer' : 'default';
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    poly.setAttribute('points', fPts(cx, cy, FR - 1.5));
+    poly.setAttribute('fill', fill); poly.setAttribute('stroke', stroke); poly.setAttribute('stroke-width', sw);
+    g.appendChild(poly);
+
+    const hasH = !!(hero || eH);
+
+    if (hasH) {
+      const hName = (hero || eH).name;
+      const size = FR * 1.8;
+      const clipId = 'hclip' + ai;
+      const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+      const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+      clipPath.setAttribute('id', clipId);
+      const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      circle.setAttribute('cx', cx.toFixed(1));
+      circle.setAttribute('cy', cy.toFixed(1));
+      circle.setAttribute('r', (size/2).toFixed(1));
+      clipPath.appendChild(circle);
+      defs.appendChild(clipPath);
+      svg.appendChild(defs);
+      const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
+      img.setAttribute('href', heroImg(hName));
+      img.setAttribute('x', (cx - size/2).toFixed(1));
+      img.setAttribute('y', (cy - size/2).toFixed(1));
+      img.setAttribute('width', size.toFixed(1));
+      img.setAttribute('height', size.toFixed(1));
+      img.setAttribute('clip-path', 'url(#' + clipId + ')');
+      img.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+      g.appendChild(img);
+    }
+
+    // Tile number — rendered last so it's always on top
+    const lbl = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    lbl.setAttribute('x', cx); lbl.setAttribute('y', (cy + FR - 4).toFixed(1));
+    lbl.setAttribute('text-anchor', 'middle'); lbl.setAttribute('font-size', '8'); lbl.setAttribute('font-weight', '700');
+    lbl.setAttribute('fill', 'white');
+    lbl.setAttribute('stroke', 'rgba(0,0,0,0.7)'); lbl.setAttribute('stroke-width', '2'); lbl.setAttribute('paint-order', 'stroke');
+    lbl.textContent = pos; g.appendChild(lbl);
+    if (click) g.onclick = () => handleFormTile(ai);
+    svg.appendChild(g);
+  });
+}
+
+function handleFormTile(ai) {
+  const myLocked = myRole === 'blue' ? draft.blueLocked : draft.redLocked;
+  if (myLocked || draft.formRevealed) return;
+  const myForm   = myRole === 'blue' ? (draft.blueFormation || {}) : (draft.redFormation || {});
+  const myFormR1 = myRole === 'blue' ? (draft.blueFormationR1 || {}) : (draft.redFormationR1 || {});
+  const tileState = formTileData[ai];
+  const iAmAttacker = myRole === (draft.attackerRole || 'blue');
+  const isMyTile  = iAmAttacker ? (tileState === 1 || tileState === 2) : (tileState === -1);
+  if (!isMyTile) return;
+  if (myForm[ai]) {
+    // Don't allow removing round 1 placements during round 2
+    if (myFormR1[ai]) { toast('Round 1 placement is locked'); return; }
+    if (myRole === 'blue') delete draft.blueFormation[ai]; else delete draft.redFormation[ai];
+    saveDraft(); renderFormation(); return;
+  }
+  if (!formSelHero) { toast('Select a hero first'); return; }
+  const round = draft.formRound || 1, allowed = round === 1 ? 3 : 2, prev = round === 1 ? 0 : 3;
+  if (Object.keys(myForm).length >= prev + allowed) { toast('Max heroes for this round'); return; }
+  if (myRole === 'blue') draft.blueFormation[ai] = formSelHero; else draft.redFormation[ai] = formSelHero;
+  formSelHero = null; saveDraft(); renderFormation();
+}
+
+function renderFormHeroes() {
+  const panel = document.getElementById('formHeroesPanel');
+  if (!panel) return;
+  panel.innerHTML = '<div class="form-panel-label">Your Heroes</div>';
+  const myPicks  = myRole === 'blue' ? draft.bluePicks : draft.redPicks;
+  const myForm   = myRole === 'blue' ? (draft.blueFormation || {}) : (draft.redFormation || {});
+  const myFormR1 = myRole === 'blue' ? (draft.blueFormationR1 || {}) : (draft.redFormationR1 || {});
+  const myLocked = myRole === 'blue' ? draft.blueLocked : draft.redLocked;
+  const round = draft.formRound || 1, allowed = round === 1 ? 3 : 2, prev = round === 1 ? 0 : 3;
+  const placed = Object.values(myForm);
+  const heroMap = Object.fromEntries(HEROES.map(h => [h.name, h]));
+  (myPicks || []).forEach(name => {
+    const h = heroMap[name]; if (!h) return;
+    const isPlaced = placed.includes(name), isSel = formSelHero === name;
+    const tileId  = Object.keys(myForm).find(k => myForm[k] === name);
+    const tilePos = tileId !== undefined ? TIP2[parseInt(tileId)] : null;
+    const canSel  = !isPlaced && Object.keys(myForm).length < prev + allowed && !myLocked && !draft.formRevealed;
+    const div = document.createElement('div');
+    div.className = 'form-hero-chip' + (isSel ? ' selected-chip' : '') + (isPlaced ? ' placed' : '') + ((!canSel && !isPlaced) ? ' disabled-chip' : '');
+    div.innerHTML = '<img src="' + heroImg(h.name) + '" alt="' + h.name + '" class="chip-em" style="width:32px;height:32px;border-radius:50%;object-fit:cover" onerror="this.outerHTML=\'<span class=chip-em>' + h.em + '</span>\'"><div class="chip-info"><div class="chip-name">' + h.name + '</div><div class="chip-cls">' + h.cls + '</div></div>' + (isPlaced ? '<div class="chip-tile">T' + tilePos + '</div>' : '');
+    if (canSel) div.onclick = () => { formSelHero = name; renderFormation(); };
+    else if (isPlaced && !myLocked && !draft.formRevealed) div.onclick = () => {
+      const k = Object.keys(myForm).find(k => myForm[k] === name);
+      // Don't allow removing round 1 placements
+      if (k && myFormR1[k]) { toast('Round 1 placement is locked'); return; }
+      if (myRole === 'blue') delete draft.blueFormation[k]; else delete draft.redFormation[k];
+      saveDraft(); renderFormation();
+    };
+    panel.appendChild(div);
+  });
+}
+
+function renderFormOpp() {
+  const panel = document.getElementById('formOppPanel');
+  if (!panel) return;
+  const oppLocked = myRole === 'blue' ? draft.redLocked  : draft.blueLocked;
+  const oppPicks  = myRole === 'blue' ? (draft.redPicks  || []) : (draft.bluePicks || []);
+  const oppForm   = draft.formRevealed
+    ? (myRole === 'blue' ? (draft.redFormation || {}) : (draft.blueFormation || {}))
+    : draft.round1Revealed
+      ? (myRole === 'blue' ? (draft.redFormationR1 || {}) : (draft.blueFormationR1 || {}))
+      : {};
+  const heroMap   = Object.fromEntries(HEROES.map(h => [h.name, h]));
+  panel.innerHTML = '<div class="form-panel-label">Opponent</div><div class="lock-status" style="margin-top:4px;color:' + (oppLocked ? 'var(--teal)' : 'var(--text3)') + '">' + (oppLocked ? '✓ Locked In' : 'Still placing...') + '</div>';
+  oppPicks.forEach(name => {
+    const h = heroMap[name]; if (!h) return;
+    const tileId  = Object.keys(oppForm).find(k => oppForm[k] === name);
+    const tilePos = tileId !== undefined ? TIP2[parseInt(tileId)] : null;
+    const revealed = draft.formRevealed || draft.round1Revealed;
+    const div = document.createElement('div');
+    div.className = 'opp-hero-slot' + (revealed && tileId ? ' revealed' : '');
+    div.innerHTML = (revealed ? '<img src="' + heroImg(h.name) + '" alt="' + h.name + '" class="oh-em" style="width:28px;height:28px;border-radius:50%;object-fit:cover">' : '<span class="oh-em">❓</span>') + '<span class="oh-name">' + (revealed ? h.name : '???') + '</span>' + (revealed && tilePos ? '<span class="oh-tile">T' + tilePos + '</span>' : '');
+    panel.appendChild(div);
+  });
+}
+
+function updateFormLock() {
+  const myForm   = myRole === 'blue' ? (draft.blueFormation || {}) : (draft.redFormation || {});
+  const myLocked = myRole === 'blue' ? draft.blueLocked : draft.redLocked;
+  const oppLocked= myRole === 'blue' ? draft.redLocked  : draft.blueLocked;
+  const round = draft.formRound || 1, needed = round === 1 ? 3 : 2, prev = round === 1 ? 0 : 3;
+  const btn  = document.getElementById('lockBtn');
+  const info = document.getElementById('lockInfo');
+  const stat = document.getElementById('lockStatus');
+  if (!btn) return;
+
+  // If fully revealed — show summary button, skip all other logic
+  if (draft.formRevealed) {
+    btn.disabled = false;
+    btn.textContent = '📋 View Full Summary';
+    btn.onclick = showFinalFormationScreen;
+    if (info) info.textContent = 'All heroes revealed!';
+    if (stat) stat.textContent = '';
+    return;
+  }
+
+  if (myLocked) {
+    btn.disabled = true; btn.textContent = '✓ Locked In';
+    btn.onclick = null;
+    if (stat) stat.textContent = oppLocked ? 'Both locked — revealing...' : 'Waiting for opponent...';
+  } else {
+    const ready = Object.keys(myForm).length >= prev + needed;
+    btn.disabled = !ready; btn.textContent = 'Lock In Formation';
+    btn.onclick = lockFormation;
+    if (info) info.textContent = ready ? 'Ready! Lock in when set.' : 'Place ' + (prev + needed - Object.keys(myForm).length) + ' more hero' + (prev + needed - Object.keys(myForm).length !== 1 ? 'es' : '');
+  }
+}
+
+function renderFormation() {
+  renderFormHeroes(); renderFormHexGrid(); renderFormOpp(); updateFormLock();
+  const el = document.getElementById('formRoundBadge');
+  if (el) el.textContent = 'Round ' + (draft.formRound || 1) + ' — Place ' + ((draft.formRound || 1) === 1 ? 3 : 2);
+}
+
+function lockFormation() {
+  if (myRole === 'blue') draft.blueLocked = true;
+  else                   draft.redLocked  = true;
+
+  // Solo/test mode — no real opponent, auto-lock their side too
+  const isSolo = !roomCode || draft.redName === 'Red' || draft.blueName === 'Blue';
+  if (isSolo) {
+    draft.blueLocked = true;
+    draft.redLocked  = true;
+    saveDraft(); renderFormation(); checkBothLocked();
+    return;
+  }
+
+  // Multiplayer — save and let Firebase listener handle both-locked detection
+  saveDraft(); renderFormation();
+}
+
+function checkBothLocked() {
+  if (!draft.blueLocked || !draft.redLocked) return;
+  const round = draft.formRound || 1;
+  if (round === 1) {
+    // Snapshot round 1 formations before revealing
+    draft.blueFormationR1 = {...draft.blueFormation};
+    draft.redFormationR1  = {...draft.redFormation};
+    draft.round1Revealed = true;
+    draft.formRound = 2; draft.blueLocked = false; draft.redLocked = false;
+    saveDraft(); renderFormation();
+    toast('Round 1 revealed! Now place your final 2 heroes.');
+  } else {
+    // Final round — reveal all on the grid, show continue button
+    draft.formRevealed = true; saveDraft(); renderFormation();
+    // Show a continue button on the formation screen
+    const lockArea = document.getElementById('lockInfo');
+    const lockBtn  = document.getElementById('lockBtn');
+    const lockStat = document.getElementById('lockStatus');
+    if (lockArea) lockArea.textContent = 'All heroes revealed!';
+    if (lockBtn)  { lockBtn.disabled = false; lockBtn.textContent = '📋 View Full Summary'; lockBtn.onclick = showFinalFormationScreen; lockBtn.className = 'btn-lock'; }
+    if (lockStat) lockStat.textContent = '';
+  }
+}
+
+function showFinalFormationScreen() {
+  showScreen('resultScreen');
+  updateFearlessIndicator();
+  renderSeriesScoreboard();
+  renderWinnerButtons();
+  renderActionButtons();
+  const heroMap = Object.fromEntries(HEROES.map(h => [h.name, h]));
+
+  const makeGrid = (formation, role) => {
+    const W=50, H=W*(20/18), R=W/Math.sqrt(3), VVS=W*1.0, MMT=-7, PPL=2.5;
+    const tl=[{n:2,pl:60},{n:5,pl:30},{n:6,pl:20},{n:6,pl:10},{n:7,pl:0},{n:6,pl:10},{n:6,pl:0},{n:5,pl:10},{n:2,pl:0}];
+    const hexes=[];
+    let ai=0;
+    tl.forEach(({n,pl},row)=>{
+      const offX=pl*PPL, cy=row*VVS+row*MMT+H/2;
+      for(let c=0;c<n;c++){hexes.push({ai,pos:TIP2[ai],state:formTileData[ai],cx:offX+c*W+W/2,cy});ai++;}
+    });
+    const allCX=hexes.map(h=>h.cx),gMin=Math.min(...allCX),gMax=Math.max(...allCX);
+    hexes.forEach(h=>{h.reflCX=gMin+gMax-h.cx;});
+    hexes.forEach((h,i)=>{const mi=44-i;h.mCX=(mi>=0&&mi<45)?hexes[mi].reflCX:h.cx;});
+    const cxFn=h=>h.ai>=25?h.mCX:h.cx;
+    const vis=hexes.filter(h=>h.state!==0);
+    if(!vis.length) return '';
+    const cxs=vis.map(cxFn),cys=vis.map(h=>h.cy);
+    const minX=Math.min(...cxs)-W/2-1,maxX=Math.max(...cxs)+W/2+1;
+    const minY=Math.min(...cys)-H/2-1,maxY=Math.max(...cys)+H/2+1;
+    const isBlue=role==='blue';
+    let svg='';
+    hexes.forEach(h=>{
+      if(h.state===0) return;
+      const cx=cxFn(h),cy=h.cy,{ai,pos,state}=h;
+      const isMyTile=isBlue?(state===1||state===2):(state===-1);
+      const isOppTile=isBlue?(state===-1):(state===1||state===2);
+      const name=formation[ai];
+      const hero=name?heroMap[name]:null;
+      const pts=Array.from({length:6},(_,i)=>{const a=Math.PI/3*i+Math.PI/6;return`${(cx+R*Math.cos(a)).toFixed(1)},${(cy+R*Math.sin(a)).toFixed(1)}`;}).join(' ');
+      let fill,stroke;
+      if(isMyTile){fill=hero?'rgba(30,60,120,0.9)':'rgba(10,20,50,0.6)';stroke='#378add';}
+      else if(isOppTile){fill=hero?'rgba(120,30,30,0.9)':'rgba(50,10,10,0.6)';stroke='#e24b4a';}
+      else{fill='rgba(255,255,255,0.03)';stroke='rgba(255,255,255,0.1)';}
+      svg+=`<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="1.5"/>`;
+      const tc=isMyTile?'#6090ff':isOppTile?'#ff6060':'rgba(255,255,255,0.15)';
+      svg+=`<text x="${cx.toFixed(1)}" y="${(hero?cy-8:cy+4).toFixed(1)}" text-anchor="middle" font-size="6" fill="${tc}" font-weight="500">${pos}</text>`;
+      if(hero){
+        const size=R*1.4;
+        const clipId='sc'+ai;
+        svg+=`<defs><clipPath id="${clipId}"><circle cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" r="${(size/2).toFixed(1)}"/></clipPath></defs>`;
+        svg+=`<image href="${heroImg(hero.name)}" x="${(cx-size/2).toFixed(1)}" y="${(cy-size/2).toFixed(1)}" width="${size.toFixed(1)}" height="${size.toFixed(1)}" clip-path="url(#${clipId})" preserveAspectRatio="xMidYMid slice"/>`;
+      }
+    });
+    return `<svg viewBox="${minX} ${minY} ${maxX-minX} ${maxY-minY}" style="overflow:visible;display:block;margin:0 auto;width:100%;max-width:${Math.ceil(maxX-minX)}px;height:auto">${svg}</svg>`;
+  };
+
+  const makeList = (formation, tileColor) => {
+    return Object.entries(formation||{}).sort((a,b)=>TIP2[+a[0]]-TIP2[+b[0]]).map(([ai,name])=>{
+      const h=heroMap[name]; if(!h) return '';
+      const tile=TIP2[+ai];
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:7px 12px;border-radius:7px;background:var(--bg3);border:1px solid var(--bdr);margin-bottom:5px">
+        <div>
+          <div style="font-size:12px;font-weight:700;color:var(--text1)">${h.name}</div>
+          <div style="font-size:10px;color:var(--text2)">${h.cls} · ${h.faction}</div>
+        </div>
+        <div style="font-family:'Cinzel',serif;font-size:11px;color:${tileColor};font-weight:700">T${tile}</div>
+      </div>`;
+    }).join('');
+  };
+
+  const blueGrid = makeGrid(draft.blueFormation||{}, 'blue');
+  const redGrid  = makeGrid(draft.redFormation ||{}, 'red');
+  const blueList = makeList(draft.blueFormation||{}, '#6090ff');
+  const redList  = makeList(draft.redFormation ||{}, '#ff6090');
+
+  document.getElementById('resultTeams').innerHTML = `
+    <div class="result-team">
+      <div class="result-team-name" style="color:#6090ff;border-bottom:1px solid rgba(96,144,255,0.2);padding-bottom:10px;margin-bottom:14px">🔵 ${draft.blueName}</div>
+      ${blueGrid}
+      <div style="margin-top:14px">${blueList}</div>
+    </div>
+    <div style="display:flex;align-items:center;font-family:'Cinzel',serif;font-size:22px;font-weight:900;color:var(--text3);padding:0 4px;align-self:center">VS</div>
+    <div class="result-team">
+      <div class="result-team-name" style="color:#ff6090;border-bottom:1px solid rgba(255,96,144,0.2);padding-bottom:10px;margin-bottom:14px">🔴 ${draft.redName}</div>
+      ${redGrid}
+      <div style="margin-top:14px">${redList}</div>
+    </div>`;
+}
+
+function useAnotherMap() {
+  // Reset formation state but keep picks/bans, go back to map vote
+  attackerRole = 'blue';
+  draft.blueFormation = {}; draft.redFormation = {};
+  draft.blueFormationR1 = {}; draft.redFormationR1 = {};
+  draft.blueLocked = false; draft.redLocked = false;
+  draft.formRound = 1; draft.formRevealed = false; draft.round1Revealed = false;
+  draft.blueVote = null; draft.redVote = null; draft.selectedMap = null;
+  draft.blueSkipVote = null; draft.redSkipVote = null;
+  draft.attackerRole = 'blue';
+  draft.actionVote = {}; draft.actionExecute = null;
+  draft.gameLogged = false;
+  gameLogged = false;
+  saveDraft(); showMapVote();
+  // Clear roles display
+  const res = document.getElementById('rolesResult');
+  if (res) res.textContent = '';
+}
+
+function goToFinalResult() {
+    console.log("--- VIEW SUMMARY CLICKED ---");
+    showFinalFormationScreen();
+}
+
+function skipToDraft() {
+  skippedDraft = true;
+  if (!myRole) { myRole = 'blue'; }
+  if (!myName) { myName = 'TestBlue'; }
+  const s = [...HEROES].filter(h => !fearlessPool.has(h.name)).sort(() => Math.random() - 0.5);
+  draft.bluePicks = s.slice(0, 5).map(h => h.name);
+  draft.redPicks  = s.slice(5, 10).map(h => h.name);
+  draft.blueBans  = s.slice(10, 13).map(h => h.name);
+  draft.redBans   = s.slice(13, 16).map(h => h.name);
+  draft.blueName  = draft.blueName || myName || 'Blue';
+  draft.redName   = draft.redName  || 'Red';
+  draft.done = true; draft.formPhase = true; draft.formRound = 1;
+  draft.blueFormation = {}; draft.redFormation = {};
+  draft.blueLocked = false; draft.redLocked = false; draft.formRevealed = false;
+  saveDraft(); showMapVote();
+}
+
+// Hook Firebase sync for formation screen
+const _origSyncDraftFn = window._fbOn;
+let _formAdvancing = false;
+function syncFormation(d) {
+    if (!d || !d.formPhase) return;
+    draft = normalizeDraft(d);
+    if (!document.getElementById('formationScreen').classList.contains('active')) return;
+
+    renderFormation();
+
+    if (draft.blueLocked && draft.redLocked && !draft.formRevealed) {
+        if (myRole === 'blue') {
+            checkBothLocked();
+        }
+    } else if (draft.formRevealed) {
+        const lockBtn = document.getElementById('lockBtn');
+        if (lockBtn) {
+            lockBtn.disabled = false;
+            lockBtn.textContent = '📋 View Full Summary';
+            lockBtn.onclick = () => { goToFinalResult(); };
+        }
+    }
+}
+// Webhooks are now handled server-side — no secrets in client code
+</script>
+
+<!-- ── DISCONNECT OVERLAY ── -->
+<div class="disconnect-overlay" id="disconnectOverlay">
+  <div class="disconnect-box">
+    <div class="disconnect-title">Opponent Disconnected</div>
+    <div class="disconnect-msg" id="disconnectMsg">Your opponent has left the room.</div>
+    <div class="disconnect-actions">
+      <button class="btn btn-ghost" style="width:auto;padding:10px 20px" onclick="dismissDisconnect()">Dismiss</button>
+      <button class="btn btn-gold" style="width:auto;padding:10px 20px" onclick="backToLobby()">Back to Lobby</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CHAT PANEL ── -->
+<div class="chat-panel collapsed" id="chatPanel">
+  <div class="chat-header" onclick="toggleChat()">
+    <div class="chat-header-title">
+      💬 Room Chat
+      <span class="chat-unread" id="chatUnread">0</span>
+    </div>
+    <span class="chat-toggle" id="chatToggleIcon">▲</span>
+  </div>
+  <div class="chat-messages" id="chatMessages"></div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chatInput" placeholder="Message..." maxlength="200"
+      onkeydown="if(event.key==='Enter')sendChatMsg()">
+    <button class="chat-send-btn" onclick="sendChatMsg()">➤</button>
+  </div>
+</div>
+
+
+<!-- ── HERO ACTION MODAL ── -->
+<div class="hero-action-overlay" id="hamOverlay" onclick="closeHam(event)">
+  <div class="hero-action-modal" id="hamModal">
+    <div class="ham-em" id="hamEm"></div>
+    <div class="ham-name" id="hamName"></div>
+    <div class="ham-cls" id="hamCls"></div>
+    <div class="ham-btns" id="hamBtns"></div>
+    <button class="ham-cancel" onclick="closeHamModal()">Cancel</button>
+  </div>
+</div>
+
+
+<!-- ══ MAP VOTE SCREEN ══ -->
+<div class="screen" id="mapVoteScreen">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;gap:24px;padding:40px 20px;max-width:700px;margin:0 auto;width:100%">
+    <div style="font-family:'Cinzel',serif;font-size:28px;font-weight:900;color:var(--gold);text-align:center;letter-spacing:0.06em">Choose the Arena</div>
+    <div id="mapVoteStatus" style="font-size:13px;color:var(--text2);text-align:center">Both players vote — matching picks win, otherwise random!</div>
+    <div id="mapVoteButtons" style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;width:100%"></div>
+    <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+      <button class="btn btn-ghost" style="width:auto;padding:10px 24px" onclick="randomizeMap()">🎲 Randomize Arena</button>
+      <button class="btn btn-ghost" id="coinFlipBtn" style="width:auto;padding:10px 24px" onclick="coinFlipRoles()">⚔️ Coin Flip Roles</button>
+    </div>
+    <div id="rolesResult" style="font-size:13px;color:var(--teal);text-align:center;min-height:20px"></div>
+    <div id="mapVoteResult" style="font-family:'Cinzel',serif;font-size:18px;color:var(--gold);min-height:28px;text-align:center"></div>
+  </div>
+</div>
+
+<!-- ══ FORMATION SCREEN ══ -->
+<div class="screen" id="formationScreen">
+  <div class="form-topbar">
+    <div class="form-title">⚔ Formation Phase</div>
+    <div class="form-round-badge" id="formRoundBadge">Round 1 — Place 3</div>
+    <div class="form-status" id="formStatus">Select a hero, then tap a tile</div>
+  </div>
+  <div class="form-body">
+    <div class="form-heroes-panel" id="formHeroesPanel">
+      <div class="form-panel-label">Your Heroes</div>
+    </div>
+    <div class="form-grid-area">
+      <svg id="hexSvgForm" style="overflow:visible;display:block;min-width:300px;min-height:400px"></svg>
+      <div class="form-lock-area" style="width:280px">
+        <div class="lock-info" id="lockInfo">Place your heroes on your tiles</div>
+        <button class="btn-lock" id="lockBtn" disabled onclick="lockFormation()">Lock In Formation</button>
+        <div class="lock-status" id="lockStatus"></div>
+      </div>
+    </div>
+    <div class="form-opp-panel" id="formOppPanel">
+      <div class="form-panel-label">Opponent</div>
+    </div>
+  </div>
+</div>
+
+<!-- Reveal overlay -->
+<div class="form-reveal-overlay" id="revealOverlay">
+  <div class="reveal-title">Formations Revealed!</div>
+  <div class="result-teams" id="revealTeams"></div>
+  <button class="btn btn-gold" style="width:auto;padding:12px 32px;font-size:12px" onclick="goToFinalResult()">View Full Summary</button>
+</div>
+
+</body>
+</html>
