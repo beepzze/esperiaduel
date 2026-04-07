@@ -267,6 +267,40 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
 }
 .vote-status.has-vote{color:var(--teal)}
 
+/* ── PREDICTION PANEL ── */
+.prediction-panel{
+  width:100%;max-width:440px;
+  background:var(--bg2);border:1px solid var(--bdr2);border-radius:12px;
+  padding:20px;margin-bottom:12px
+}
+.pred-header{
+  font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.15em;
+  color:var(--text2);text-transform:uppercase;text-align:center;margin-bottom:14px
+}
+.pred-bar-wrap{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.pred-bar{flex:1;height:28px;border-radius:6px;overflow:hidden;display:flex;background:var(--bg3)}
+.pred-bar-blue{
+  background:linear-gradient(90deg,#2c5ff2,#4a7aff);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:white;transition:width 0.6s ease
+}
+.pred-bar-red{
+  background:linear-gradient(90deg,#e03040,#f22c2c);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-size:12px;font-weight:700;color:white;transition:width 0.6s ease
+}
+.pred-confidence{text-align:center;font-size:12px;color:var(--gold);font-family:'Cinzel',serif;letter-spacing:0.08em}
+.pred-details{margin-top:12px;font-size:11px;color:var(--text3);display:grid;grid-template-columns:1fr 1fr;gap:6px 16px}
+.pred-detail-label{color:var(--text2)}
+.pred-syn{color:var(--teal)}
+.pred-anti{color:var(--red)}
+.pred-result-badge{
+  text-align:center;margin-top:10px;padding:6px 12px;border-radius:6px;
+  font-family:'Cinzel',serif;font-size:11px;font-weight:700;letter-spacing:0.1em
+}
+.pred-result-correct{background:rgba(62,207,176,0.12);border:1px solid rgba(62,207,176,0.3);color:var(--teal)}
+.pred-result-wrong{background:rgba(255,94,108,0.12);border:1px solid rgba(255,94,108,0.3);color:var(--red)}
+
 /* ── TOAST ── */
 .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:200;
   background:var(--bg2);border:1px solid var(--bdr2);border-radius:10px;padding:12px 20px;
@@ -599,8 +633,166 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
     height: 300px;
   }
   .chat-panel.collapsed { height: 44px; }
+
+  /* ── TURN NOTIFICATION ── */
+  .turn-notification-banner {
+    font-size: 12px;
+    padding: 10px 20px;
+    max-width: 90vw;
+    top: auto;
+    bottom: 60px;
+  }
+
+  /* ── SERIES SCOREBOARD ── */
+  .series-scoreboard {
+    padding: 10px 16px;
+    gap: 12px;
+    width: 100%;
+  }
+  .series-score { font-size: 22px; }
+  .series-name { font-size: 11px; }
+  .series-dash { font-size: 14px; }
+  .series-winner-banner { padding: 14px 20px; }
+  .series-winner-text { font-size: 18px; }
+
+  /* ── RESULT SCREEN (enhanced) ── */
+  #resultScreen {
+    padding: 16px 10px 80px;
+    gap: 10px;
+  }
+  .result-title { font-size: 20px; }
+  .result-sub { font-size: 11px; }
+  .result-teams {
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+  }
+  .result-team {
+    min-width: 0;
+    max-width: 100%;
+    padding: 12px 10px;
+  }
+  .result-team svg { max-width: 100%; height: auto; }
+  .result-team-name { font-size: 12px; margin-bottom: 10px; }
+  .result-hero { padding: 6px 8px; gap: 8px; margin-bottom: 4px; }
+  .rh-em { font-size: 16px; }
+  .rh-name { font-size: 11px; }
+  .rh-class { font-size: 10px; }
+  .result-ban { padding: 5px 8px; font-size: 11px; }
+  .result-actions {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 4px;
+  }
+  .result-actions .btn {
+    font-size: 10px !important;
+    padding: 10px 8px !important;
+  }
+  #postGameActions {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  #winnerButtons {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* ── FEARLESS INDICATOR ── */
+  .fearless-indicator { font-size: 9px; padding: 6px 10px; }
+  .fearless-hero-list { max-width: 100%; }
+  .fearless-hero-chip { font-size: 9px; padding: 2px 6px; }
+
+  /* ── MAP VOTE SCREEN ── */
+  #mapVoteScreen > div {
+    padding: 20px 12px !important;
+    gap: 16px !important;
+  }
+  #mapVoteScreen > div > div:first-child {
+    font-size: 20px !important;
+  }
+  #mapVoteButtons {
+    gap: 6px !important;
+  }
+  #mapVoteButtons .btn {
+    font-size: 10px !important;
+    padding: 8px 12px !important;
+  }
+
+  /* ── FORMATION TOPBAR ── */
+  .form-topbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 8px 12px;
+    gap: 6px;
+  }
+  .form-title { font-size: 13px; }
+  .form-round-badge { font-size: 8px; padding: 3px 10px; }
+  .form-status { font-size: 10px; }
+
+  /* ── DISCONNECT OVERLAY ── */
+  .disconnect-box {
+    padding: 24px 20px;
+    max-width: 90vw;
+  }
+  .disconnect-title { font-size: 18px; }
+  .disconnect-msg { font-size: 12px; }
+  .disconnect-actions { flex-direction: column; gap: 8px; }
+  .disconnect-actions .btn { width: 100%; }
+
+  /* ── HERO ACTION MODAL ── */
+  .hero-action-modal {
+    padding: 20px 16px;
+    min-width: 220px;
+    max-width: 85vw;
+  }
+  .ham-em { font-size: 40px; }
+  .ham-name { font-size: 15px; }
+  .ham-btns { gap: 8px; }
+  .ham-ban, .ham-pick { padding: 10px 18px; font-size: 10px; }
+
+  /* ── REVEAL OVERLAY ── */
+  .reveal-title { font-size: 20px; }
+  .reveal-teams {
+    grid-template-columns: 1fr;
+    gap: 12px;
+    padding: 0 12px;
+  }
+  .reveal-vs { display: none; }
+
+  /* ── DISCLAIMER ── */
+  .disclaimer {
+    font-size: 9px;
+    padding: 12px 14px;
+    max-width: 100%;
+  }
+
+  /* ── GENERAL TOUCH TARGETS ── */
+  .btn { min-height: 44px; }
+  .btn-ghost { min-height: 40px; }
+  .role-btn { min-height: 60px; }
+  .fc { min-height: 28px; display: inline-flex; align-items: center; }
+  .hcard { min-height: 80px; }
 }
 
+/* ══════════════════════════════════════
+   EXTRA SMALL ≤ 380px
+══════════════════════════════════════ */
+@media (max-width: 380px) {
+  .logo-title { font-size: 18px; }
+  .lobby-card { padding: 16px 12px; }
+  .room-code { font-size: 16px; letter-spacing: 0.15em; }
+  .draft-logo { font-size: 11px; }
+  .draft-logo-gem { width: 14px; height: 14px; }
+  .timer { font-size: 18px; }
+  .hero-grid { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)); gap: 4px; }
+  .hcard { padding: 5px 3px 4px; min-height: 70px; }
+  .hcard-em { font-size: 16px; }
+  .hcard-name { font-size: 8px; }
+  .hcard-class { font-size: 7px; }
+  .series-score { font-size: 18px; }
+  .result-title { font-size: 18px; }
+  #mapVoteButtons .btn { font-size: 9px !important; padding: 7px 8px !important; }
+}
 
 /* ── HERO ACTION MODAL ── */
 .hero-action-overlay {
@@ -792,6 +984,65 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   font-family: 'Cinzel', serif; font-size: 9px;
   letter-spacing: 0.12em; text-align: center;
   color: var(--text3); text-transform: uppercase;
+}
+
+/* ── EXTRAS PLACEMENT MODE ── */
+.extras-banner{
+  position:sticky;top:60px;z-index:40;
+  background:linear-gradient(135deg,rgba(232,184,75,0.2),rgba(160,112,32,0.15));
+  border-bottom:2px solid var(--gold);
+  padding:10px 16px;text-align:center;
+  font-family:'Cinzel',serif;font-size:12px;letter-spacing:0.1em;color:var(--gold);
+  animation:extrasPulse 1.5s ease infinite
+}
+@keyframes extrasPulse{0%,100%{background:rgba(232,184,75,0.15)}50%{background:rgba(232,184,75,0.25)}}
+.extras-cancel{
+  font-size:10px;color:var(--text3);cursor:pointer;margin-top:4px;
+  background:none;border:none;font-family:'Cinzel',serif;letter-spacing:0.08em
+}
+.extras-cancel:hover{color:var(--text1)}
+
+/* ── ARTIFACT SELECTOR ── */
+.artifact-selector{
+  padding:12px;border-bottom:1px solid var(--bdr);
+}
+.artifact-label{
+  font-family:'Cinzel',serif;font-size:9px;letter-spacing:0.18em;
+  color:var(--text3);text-transform:uppercase;margin-bottom:8px
+}
+.artifact-grid{display:flex;flex-wrap:wrap;gap:6px}
+.artifact-chip{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 10px;border-radius:7px;
+  background:var(--bg3);border:1.5px solid var(--bdr);
+  cursor:pointer;transition:all 0.18s;font-size:11px;color:var(--text2)
+}
+.artifact-chip:hover{border-color:var(--gold);color:var(--text1)}
+.artifact-chip.selected{border-color:var(--gold);background:rgba(232,184,75,0.12);color:var(--gold)}
+.artifact-chip .art-em{font-size:16px}
+.artifact-none{font-size:11px;color:var(--text3);font-style:italic;padding:4px 0}
+
+/* ── PHANTIMAL INDICATOR ── */
+.phantimal-bar{
+  padding:8px 12px;border-top:1px solid var(--bdr);
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap
+}
+.phantimal-chip{
+  display:flex;align-items:center;gap:5px;
+  padding:5px 10px;border-radius:7px;
+  background:rgba(62,207,176,0.1);border:1px solid rgba(62,207,176,0.3);
+  font-size:10px;color:var(--teal);
+  font-family:'Cinzel',serif;letter-spacing:0.06em
+}
+.phantimal-chip.needs-placement{
+  border-color:var(--gold);color:var(--gold);
+  background:rgba(232,184,75,0.1);cursor:pointer
+}
+.phantimal-chip.placed{opacity:0.6}
+.phantimal-chip .ph-em{font-size:14px}
+.phantimal-label{
+  font-family:'Cinzel',serif;font-size:8px;letter-spacing:0.15em;
+  color:var(--text3);text-transform:uppercase
 }
 
 /* Hex tile styles */
@@ -1028,6 +1279,9 @@ img {
       <div class="fearless-hero-list" id="fearlessHeroList"></div>
     </div>
 
+    <!-- Prediction panel -->
+    <div id="predictionPanel"></div>
+
     <!-- Winner buttons — HOST (Blue) only -->
     <div id="winnerSection">
       <div style="font-family:'Cinzel',serif;color:var(--gold);font-size:0.9rem;letter-spacing:1px;text-align:center;margin-bottom:8px">LOG MATCH RESULT</div>
@@ -1120,7 +1374,7 @@ const HEROES = [
   {name:"Dionel", em:"☀️", cls:"Marksman", faction:"Celestial"},
   {name:"Dunlingr", em:"🗿", cls:"Tank", faction:"Celestial"},
   {name:"Eironn", em:"🌪️", cls:"Rogue", faction:"Wilder"},
-  {name:"Twins", em:"💫", cls:"Support", faction:"Celestial"},
+  {name:"Twins", em:"💫", cls:"Support", faction:"Celestial", extras:[{name:"Lailah",em:"👧"}]},
   {name:"Faramor", em:"🦊", cls:"Rogue", faction:"Wilder"},
   {name:"Fay", em:"🧚", cls:"Support", faction:"Lightbearer"},
   {name:"Florabelle", em:"🌸", cls:"Warrior", faction:"Wilder"},
@@ -1166,7 +1420,7 @@ const HEROES = [
   {name:"Pang", em:"🐼", cls:"Warrior", faction:"Wilder"},
   {name:"Parisa", em:"🧿", cls:"Mage", faction:"Wilder"},
   {name:"Perseus", em:"⚔️", cls:"Warrior", faction:"Lightbearer"},
-  {name:"Phraesto", em:"🌑", cls:"Tank", faction:"Hypogean"},
+  {name:"Phraesto", em:"🌑", cls:"Tank", faction:"Hypogean", extras:[{name:"Phraesto Clone",em:"👤"}]},
   {name:"Pippa", em:"🐰", cls:"Mage", faction:"Wilder"},
   {name:"Ravion", em:"🦅", cls:"Rogue", faction:"Wilder"},
   {name:"Reinier", em:"🌀", cls:"Support", faction:"Hypogean"},
@@ -1201,10 +1455,30 @@ const HEROES = [
   {name:"Viperian", em:"🐍", cls:"Mage", faction:"Graveborn"},
   {name:"Walker", em:"🔫", cls:"Rogue", faction:"Lightbearer"},
   {name:"Zandrok", em:"⚔️", cls:"Warrior", faction:"Mauler"},
+  {name:"Zanie", em:"🏹", cls:"Marksman", faction:"Lightbearer", extras:[{name:"Zanie Turret 1",em:"🎯"},{name:"Zanie Turret 2",em:"🎯"}]},
   {name:"Zorya", em:"🪨", cls:"Warrior", faction:"Graveborn"}
 ];
 const CLASSES = ["All","Tank","Warrior","Mage","Support","Marksman","Rogue"];
 const FACTIONS = ["All Factions","Lightbearer","Mauler","Wilder","Graveborn","Celestial","Hypogean","Dimensional"];
+
+// ── PHANTIMALS — auto-generated when 3+ of same faction are picked ──
+const PHANTIMALS = {
+  Lightbearer: {name:"LB Phantimal", em:"🦁", faction:"Lightbearer"},
+  Mauler:      {name:"Mauler Phantimal", em:"🦂", faction:"Mauler"},
+  Wilder:      {name:"Wilder Phantimal", em:"🦌", faction:"Wilder"},
+  Graveborn:   {name:"GB Phantimal", em:"🦇", faction:"Graveborn"},
+  Celestial:   {name:"Cel/Hypo Phantimal", em:"🐉", faction:"Celestial"},
+  Hypogean:    {name:"Cel/Hypo Phantimal", em:"🐉", faction:"Hypogean"}
+};
+
+// ── ARTIFACTS — each player picks 1 during formation ──
+// Add your artifacts here: {name, em, category, description}
+const ARTIFACTS = [
+  // Preseasonal
+  // {name:"Artifact Name", em:"⚡", category:"Preseasonal", description:"Short desc"},
+  // Seasonal
+  // {name:"Artifact Name", em:"🔥", category:"Seasonal", description:"Short desc"},
+];
  
 // ═══════════════════════════════════════════════════════════
 // DRAFT SEQUENCE
@@ -1455,6 +1729,12 @@ function loadDraft(code, cb) {
 // ═══════════════════════════════════════════════════════════
 function enterDraftScreen() {
   showScreen('draftScreen');
+  // Reset skip draft button state for new games
+  skippedDraft = false;
+  const skipBtn = document.getElementById('skipDraftBtn');
+  const skipStat = document.getElementById('skipDraftStatus');
+  if (skipBtn) { skipBtn.disabled = false; skipBtn.textContent = '⚡ Skip Draft'; }
+  if (skipStat) skipStat.textContent = '';
   // Request notification permission once on first entry
   if (!notifPermissionAsked && 'Notification' in window && Notification.permission === 'default') {
     notifPermissionAsked = true;
@@ -1488,6 +1768,7 @@ function enterDraftScreen() {
           renderSeriesScoreboard();
           renderWinnerButtons();
           renderActionButtons();
+          renderPrediction();
           // Only allow action execution — nothing else
           if (d.actionExecute) {
             const action = d.actionExecute;
@@ -1789,10 +2070,29 @@ function selectHero(name, disabled) {
   }
 
   document.getElementById('hamOverlay').classList.add('open');
+  // Freeze the timer while player is deciding
+  clearInterval(timerInterval);
 }
 
 function closeHamModal() {
   document.getElementById('hamOverlay').classList.remove('open');
+  // Resume the timer with remaining time
+  if (!draft.done && timerVal > 0) {
+    const el = document.getElementById('timerDisplay');
+    timerInterval = setInterval(() => {
+      timerVal--;
+      if (el) el.textContent = Math.max(0, timerVal);
+      if (timerVal <= 10 && el) el.classList.add('urgent');
+      else if (el) el.classList.remove('urgent');
+      if (timerVal <= 0) {
+        clearInterval(timerInterval);
+        const t = SEQUENCE[draft.turn];
+        if (t && t.side === myRole && !draft.done) {
+          autoAction(t.phase);
+        }
+      }
+    }, 1000);
+  }
 }
 
 function closeHam(e) {
@@ -1953,6 +2253,7 @@ function showFinalResult() {
   renderSeriesScoreboard();
   renderWinnerButtons();
   renderActionButtons();
+  renderPrediction();
   const heroMap = Object.fromEntries(HEROES.map(h=>[h.name,h]));
   const mkFormHero = (name, tile) => {
     const h = heroMap[name];
@@ -2001,6 +2302,8 @@ function startFearlessDraft() {
   fearlessMode = true;
   fearlessGameNum++;
   gameLogged = false;
+  skippedDraft = false;
+  formMovingFrom = null;
 
   // Check if enough heroes remain for another game (need at least 10 picks + 6 bans = 16)
   const remaining = HEROES.filter(h => !fearlessPool.has(h.name)).length;
@@ -2051,6 +2354,11 @@ function startFearlessDraft() {
   selectedHero = null;
   lastNotifiedTurn = -1;
   showScreen('draftScreen');
+  // Reset skip draft button
+  const skipBtn2 = document.getElementById('skipDraftBtn');
+  const skipStat2 = document.getElementById('skipDraftStatus');
+  if (skipBtn2) { skipBtn2.disabled = false; skipBtn2.textContent = '⚡ Skip Draft'; }
+  if (skipStat2) skipStat2.textContent = '';
   setTimeout(() => {
     buildFilterRow();
     renderAll();
@@ -2118,6 +2426,82 @@ function renderSeriesScoreboard() {
     banner.style.display = 'none';
     seriesOver = false;
   }
+}
+
+// ═══════════════════════════════════════════════════════════
+// PREDICTION DISPLAY
+// ═══════════════════════════════════════════════════════════
+function renderPrediction() {
+  const panel = document.getElementById('predictionPanel');
+  if (!panel) return;
+
+  const pred = draft.prediction;
+  if (!pred) { panel.innerHTML = ''; return; }
+
+  const favColor = pred.predictedWinner === 'blue' ? '#4a7aff' : '#f22c2c';
+  const favName = pred.predictedWinner === 'blue'
+    ? (draft.blueName || 'Blue')
+    : (draft.redName || 'Red');
+
+  let detailsHtml = '';
+  const blueSyn = pred.blue?.synergies || [];
+  const blueAnti = pred.blue?.antiSynergies || [];
+  const redSyn = pred.red?.synergies || [];
+  const redAnti = pred.red?.antiSynergies || [];
+
+  if (blueSyn.length || blueAnti.length || redSyn.length || redAnti.length) {
+    detailsHtml = '<div class="pred-details">';
+    detailsHtml += '<div>';
+    if (blueSyn.length) {
+      detailsHtml += '<div class="pred-detail-label" style="color:#6090ff">Blue synergies:</div>';
+      blueSyn.slice(0,2).forEach(s => {
+        detailsHtml += '<div class="pred-syn">✦ ' + s.pair[0] + ' + ' + s.pair[1] + ' (+' + Math.round(s.synergy*100) + '%)</div>';
+      });
+    }
+    if (blueAnti.length) {
+      blueAnti.slice(0,1).forEach(s => {
+        detailsHtml += '<div class="pred-anti">⚠ ' + s.pair[0] + ' + ' + s.pair[1] + ' (' + Math.round(s.synergy*100) + '%)</div>';
+      });
+    }
+    detailsHtml += '</div><div>';
+    if (redSyn.length) {
+      detailsHtml += '<div class="pred-detail-label" style="color:#ff6090">Red synergies:</div>';
+      redSyn.slice(0,2).forEach(s => {
+        detailsHtml += '<div class="pred-syn">✦ ' + s.pair[0] + ' + ' + s.pair[1] + ' (+' + Math.round(s.synergy*100) + '%)</div>';
+      });
+    }
+    if (redAnti.length) {
+      redAnti.slice(0,1).forEach(s => {
+        detailsHtml += '<div class="pred-anti">⚠ ' + s.pair[0] + ' + ' + s.pair[1] + ' (' + Math.round(s.synergy*100) + '%)</div>';
+      });
+    }
+    detailsHtml += '</div></div>';
+  }
+
+  let resultBadge = '';
+  if (pred.actualWinner) {
+    if (pred.correct) {
+      resultBadge = '<div class="pred-result-badge pred-result-correct">✓ Prediction was correct</div>';
+    } else {
+      resultBadge = '<div class="pred-result-badge pred-result-wrong">✗ Prediction was wrong — learning from this</div>';
+    }
+  }
+
+  panel.innerHTML =
+    '<div class="prediction-panel">' +
+      '<div class="pred-header">🔮 AI Prediction · ' + (pred.dataPoints || 0) + ' matches analyzed</div>' +
+      '<div class="pred-bar-wrap">' +
+        '<span style="font-size:11px;color:#6090ff;min-width:36px">' + (draft.blueName || 'Blue') + '</span>' +
+        '<div class="pred-bar">' +
+          '<div class="pred-bar-blue" style="width:' + pred.blueWinProb + '%">' + pred.blueWinProb + '%</div>' +
+          '<div class="pred-bar-red" style="width:' + pred.redWinProb + '%">' + pred.redWinProb + '%</div>' +
+        '</div>' +
+        '<span style="font-size:11px;color:#ff6090;min-width:36px;text-align:right">' + (draft.redName || 'Red') + '</span>' +
+      '</div>' +
+      '<div class="pred-confidence">' + pred.confidence + ' — <span style="color:' + favColor + '">' + favName + '</span> favored</div>' +
+      detailsHtml +
+      resultBadge +
+    '</div>';
 }
 
 function renderWinnerButtons() {
@@ -2196,6 +2580,7 @@ async function logWinner(winnerColor) {
     renderSeriesScoreboard();
     renderWinnerButtons();
     renderActionButtons();
+    renderPrediction();
   } catch (err) {
     console.error('Log winner failed:', err);
   }
@@ -2502,6 +2887,9 @@ const FPL = 2.6;         // PL unit
 let currentArena = 'Arena I';
 let formTileData  = [...ArenaPresets['Arena I']];
 let formSelHero   = null;
+let pendingExtras = [];     // Queue of {name, em} for multi-tile heroes
+let pendingExtrasOwner = null; // Name of hero whose extras are being placed
+let formMovingFrom = null;  // Tile index of hero being moved (null = not moving)
 let myVote        = null;
 let attackerRole  = 'blue'; // 'blue' or 'red' — who attacks (bottom tiles)
 
@@ -2747,6 +3135,16 @@ function renderFormHexGrid() {
   const oppFormR1   = myRole === 'blue' ? (draft.redFormationR1 || {}) : (draft.blueFormationR1 || {});
   const oppForm  = draft.formRevealed ? oppFormFull : draft.round1Revealed ? oppFormR1 : {};
   const heroMap  = Object.fromEntries(HEROES.map(h => [h.name, h]));
+  // Add extras to the lookup so turrets/clones/split units render on tiles
+  HEROES.forEach(h => {
+    if (h.extras) h.extras.forEach(e => {
+      if (!heroMap[e.name]) heroMap[e.name] = { name: e.name, em: e.em, cls: 'Summon', faction: h.faction, isExtra: true };
+    });
+  });
+  // Add phantimals to the lookup
+  Object.values(PHANTIMALS).forEach(ph => {
+    if (!heroMap[ph.name]) heroMap[ph.name] = { name: ph.name, em: ph.em, cls: 'Phantimal', faction: ph.faction, isExtra: true };
+  });
   const myLocked = myRole === 'blue' ? draft.blueLocked : draft.redLocked;
 
   all.forEach(h => {
@@ -2760,10 +3158,19 @@ function renderFormHexGrid() {
     const hero = isMyTile  && myForm[ai]  ? heroMap[myForm[ai]]  : null;
     const eH   = isOppTile && (draft.formRevealed ? oppFormFull : draft.round1Revealed ? oppFormR1 : null)?.[ai] ? heroMap[(draft.formRevealed ? oppFormFull : oppFormR1)[ai]] : null;
     const isR1Locked = isMyTile && hero && myFormR1[ai]; // placed in round 1, can't move
+    const isMoving = isMyTile && formMovingFrom === ai; // hero being picked up
     const click = isMyTile && !myLocked && !draft.formRevealed && !isR1Locked;
 
     let fill, stroke, sw;
-    if (isMyTile)  { fill = hero ? (isR1Locked ? '#8ab0d4' : '#b5d4f4') : '#e6f1fb'; stroke = formSelHero && !hero && click ? '#0c447c' : '#378add'; sw = formSelHero && !hero && click ? 2.5 : 1.5; }
+    if (isMyTile)  {
+      if (isMoving) {
+        fill = '#ffeaa0'; stroke = '#e8b84b'; sw = 3;
+      } else {
+        fill = hero ? (isR1Locked ? '#8ab0d4' : '#b5d4f4') : '#e6f1fb';
+        stroke = (formSelHero || pendingExtras.length > 0 || formMovingFrom !== null) && !hero && click ? '#0c447c' : '#378add';
+        sw = (formSelHero || pendingExtras.length > 0 || formMovingFrom !== null) && !hero && click ? 2.5 : 1.5;
+      }
+    }
     else if (isOppTile) { fill = eH ? '#f7c1c1' : '#fcebeb'; stroke = '#e24b4a'; sw = 1.5; }
     else { fill = 'rgba(255,255,255,0.04)'; stroke = 'rgba(255,255,255,0.15)'; sw = 1; }
 
@@ -2813,6 +3220,14 @@ function renderFormHexGrid() {
   });
 }
 
+// Helper: get all names that are extras/phantimals (not real heroes) so they don't count toward limits
+function getNonHeroNames() {
+  const names = new Set();
+  HEROES.forEach(h => { if (h.extras) h.extras.forEach(e => names.add(e.name)); });
+  Object.values(PHANTIMALS).forEach(ph => names.add(ph.name));
+  return names;
+}
+
 function handleFormTile(ai) {
   const myLocked = myRole === 'blue' ? draft.blueLocked : draft.redLocked;
   if (myLocked || draft.formRevealed) return;
@@ -2822,23 +3237,126 @@ function handleFormTile(ai) {
   const iAmAttacker = myRole === (draft.attackerRole || 'blue');
   const isMyTile  = iAmAttacker ? (tileState === 1 || tileState === 2) : (tileState === -1);
   if (!isMyTile) return;
-  if (myForm[ai]) {
-    // Don't allow removing round 1 placements during round 2
-    if (myFormR1[ai]) { toast('Round 1 placement is locked'); return; }
-    if (myRole === 'blue') delete draft.blueFormation[ai]; else delete draft.redFormation[ai];
-    saveDraft(); renderFormation(); return;
+
+  // ── PENDING EXTRAS MODE ──
+  if (pendingExtras.length > 0) {
+    if (myForm[ai]) { toast('Tile is occupied'); return; }
+    const extra = pendingExtras.shift();
+    if (myRole === 'blue') draft.blueFormation[ai] = extra.name;
+    else draft.redFormation[ai] = extra.name;
+    if (pendingExtras.length === 0) {
+      pendingExtrasOwner = null;
+      toast('All units placed!');
+    } else {
+      toast('Place ' + pendingExtras[0].name + ' (' + pendingExtras.length + ' remaining)');
+    }
+    saveDraft(); renderFormation();
+    return;
   }
+
+  // ── MOVING MODE — hero is picked up ──
+  if (formMovingFrom !== null) {
+    // Clicked same tile → cancel move
+    if (formMovingFrom === ai) {
+      formMovingFrom = null;
+      toast('Move cancelled');
+      renderFormation();
+      return;
+    }
+
+    const movingName = myForm[formMovingFrom];
+
+    // Clicked another occupied tile → swap
+    if (myForm[ai]) {
+      // Don't swap with R1-locked tiles
+      if (myFormR1[ai]) { toast('That tile is locked from round 1'); return; }
+      const otherName = myForm[ai];
+      if (myRole === 'blue') {
+        draft.blueFormation[ai] = movingName;
+        draft.blueFormation[formMovingFrom] = otherName;
+      } else {
+        draft.redFormation[ai] = movingName;
+        draft.redFormation[formMovingFrom] = otherName;
+      }
+      formMovingFrom = null;
+      toast('Swapped!');
+      saveDraft(); renderFormation();
+      return;
+    }
+
+    // Clicked empty tile → move there
+    if (myRole === 'blue') {
+      draft.blueFormation[ai] = movingName;
+      delete draft.blueFormation[formMovingFrom];
+    } else {
+      draft.redFormation[ai] = movingName;
+      delete draft.redFormation[formMovingFrom];
+    }
+    formMovingFrom = null;
+    saveDraft(); renderFormation();
+    return;
+  }
+
+  // ── CLICK ON OCCUPIED TILE — pick up to move ──
+  if (myForm[ai]) {
+    if (myFormR1[ai]) { toast('Round 1 placement is locked'); return; }
+    // Enter moving mode
+    formMovingFrom = ai;
+    formSelHero = null; // Cancel any hero selection
+    toast('Tap another tile to move or swap');
+    renderFormation();
+    return;
+  }
+
+  // ── CLICK ON EMPTY TILE — place selected hero ──
   if (!formSelHero) { toast('Select a hero first'); return; }
   const round = draft.formRound || 1, allowed = round === 1 ? 3 : 2, prev = round === 1 ? 0 : 3;
-  if (Object.keys(myForm).length >= prev + allowed) { toast('Max heroes for this round'); return; }
-  if (myRole === 'blue') draft.blueFormation[ai] = formSelHero; else draft.redFormation[ai] = formSelHero;
-  formSelHero = null; saveDraft(); renderFormation();
+  const nonHeroNames = getNonHeroNames();
+  const heroCount = Object.values(myForm).filter(n => !nonHeroNames.has(n)).length;
+  if (heroCount >= prev + allowed) { toast('Max heroes for this round'); return; }
+
+  // Place the hero
+  if (myRole === 'blue') draft.blueFormation[ai] = formSelHero;
+  else draft.redFormation[ai] = formSelHero;
+
+  // Check if this hero has extras to place
+  const placedHero = HEROES.find(h => h.name === formSelHero);
+  if (placedHero && placedHero.extras && placedHero.extras.length > 0) {
+    pendingExtras = [...placedHero.extras];
+    pendingExtrasOwner = formSelHero;
+    formSelHero = null;
+    toast('Now place ' + pendingExtras[0].name + ' (' + pendingExtras.length + ' to place)');
+  } else {
+    formSelHero = null;
+  }
+
+  saveDraft(); renderFormation();
 }
 
 function renderFormHeroes() {
   const panel = document.getElementById('formHeroesPanel');
   if (!panel) return;
   panel.innerHTML = '<div class="form-panel-label">Your Heroes</div>';
+
+  // Show pending extras banner
+  if (pendingExtras.length > 0) {
+    const banner = document.createElement('div');
+    banner.style.cssText = 'width:100%;padding:8px 10px;border-radius:7px;background:rgba(232,184,75,0.12);border:1px solid rgba(232,184,75,0.3);font-size:11px;color:var(--gold);text-align:center;font-family:Cinzel,serif;letter-spacing:0.08em';
+    banner.textContent = 'Place ' + pendingExtras[0].name + ' on a tile (' + pendingExtras.length + ' left)';
+    panel.appendChild(banner);
+  }
+
+  // Show moving mode banner
+  if (formMovingFrom !== null) {
+    const myForm_ = myRole === 'blue' ? (draft.blueFormation || {}) : (draft.redFormation || {});
+    const movingName = myForm_[formMovingFrom] || '?';
+    const banner = document.createElement('div');
+    banner.style.cssText = 'width:100%;padding:8px 10px;border-radius:7px;background:rgba(155,111,255,0.12);border:1px solid rgba(155,111,255,0.35);font-size:11px;color:var(--pur2);text-align:center;cursor:pointer;font-family:Cinzel,serif;letter-spacing:0.08em';
+    banner.textContent = 'Moving ' + movingName + ' — tap tile to place, or tap here to cancel';
+    banner.onclick = () => { formMovingFrom = null; renderFormation(); };
+    panel.appendChild(banner);
+  }
+
   const myPicks  = myRole === 'blue' ? draft.bluePicks : draft.redPicks;
   const myForm   = myRole === 'blue' ? (draft.blueFormation || {}) : (draft.redFormation || {});
   const myFormR1 = myRole === 'blue' ? (draft.blueFormationR1 || {}) : (draft.redFormationR1 || {});
@@ -2846,21 +3364,44 @@ function renderFormHeroes() {
   const round = draft.formRound || 1, allowed = round === 1 ? 3 : 2, prev = round === 1 ? 0 : 3;
   const placed = Object.values(myForm);
   const heroMap = Object.fromEntries(HEROES.map(h => [h.name, h]));
+
+  // Count only actual heroes (not extras) for the limit
+  const nonHeroNames = getNonHeroNames();
+  const heroCount = placed.filter(n => !nonHeroNames.has(n)).length;
+  const hasPending = pendingExtras.length > 0;
+
   (myPicks || []).forEach(name => {
     const h = heroMap[name]; if (!h) return;
     const isPlaced = placed.includes(name), isSel = formSelHero === name;
     const tileId  = Object.keys(myForm).find(k => myForm[k] === name);
     const tilePos = tileId !== undefined ? TIP2[parseInt(tileId)] : null;
-    const canSel  = !isPlaced && Object.keys(myForm).length < prev + allowed && !myLocked && !draft.formRevealed;
+    // Can't select if: already placed, max heroes reached, locked, revealed, or placing extras
+    const canSel  = !isPlaced && heroCount < prev + allowed && !myLocked && !draft.formRevealed && !hasPending;
     const div = document.createElement('div');
     div.className = 'form-hero-chip' + (isSel ? ' selected-chip' : '') + (isPlaced ? ' placed' : '') + ((!canSel && !isPlaced) ? ' disabled-chip' : '');
-    div.innerHTML = '<img src="' + heroImg(h.name) + '" alt="' + h.name + '" class="chip-em" style="width:32px;height:32px;border-radius:50%;object-fit:cover" onerror="this.outerHTML=\'<span class=chip-em>' + h.em + '</span>\'"><div class="chip-info"><div class="chip-name">' + h.name + '</div><div class="chip-cls">' + h.cls + '</div></div>' + (isPlaced ? '<div class="chip-tile">T' + tilePos + '</div>' : '');
-    if (canSel) div.onclick = () => { formSelHero = name; renderFormation(); };
-    else if (isPlaced && !myLocked && !draft.formRevealed) div.onclick = () => {
+
+    let extrasInfo = '';
+    if (isPlaced && h.extras) {
+      const placedExtras = h.extras.filter(e => placed.includes(e.name)).length;
+      extrasInfo = '<div style="font-size:9px;color:var(--teal)">+' + placedExtras + '/' + h.extras.length + ' units</div>';
+    }
+
+    div.innerHTML = '<img src="' + heroImg(h.name) + '" alt="' + h.name + '" class="chip-em" style="width:32px;height:32px;border-radius:50%;object-fit:cover" onerror="this.outerHTML=\'<span class=chip-em>' + h.em + '</span>\'"><div class="chip-info"><div class="chip-name">' + h.name + '</div><div class="chip-cls">' + h.cls + '</div>' + extrasInfo + '</div>' + (isPlaced ? '<div class="chip-tile">T' + tilePos + '</div>' : '');
+    if (canSel) div.onclick = () => { formMovingFrom = null; formSelHero = name; renderFormation(); };
+    else if (isPlaced && !myLocked && !draft.formRevealed && !hasPending) div.onclick = () => {
       const k = Object.keys(myForm).find(k => myForm[k] === name);
-      // Don't allow removing round 1 placements
       if (k && myFormR1[k]) { toast('Round 1 placement is locked'); return; }
+      // Remove hero and all its extras
+      if (h.extras) {
+        const extraNames = h.extras.map(e => e.name);
+        Object.keys(myForm).forEach(ek => {
+          if (extraNames.includes(myForm[ek])) {
+            if (myRole === 'blue') delete draft.blueFormation[ek]; else delete draft.redFormation[ek];
+          }
+        });
+      }
       if (myRole === 'blue') delete draft.blueFormation[k]; else delete draft.redFormation[k];
+      if (pendingExtrasOwner === name) { pendingExtras = []; pendingExtrasOwner = null; }
       saveDraft(); renderFormation();
     };
     panel.appendChild(div);
@@ -2916,17 +3457,154 @@ function updateFormLock() {
     btn.onclick = null;
     if (stat) stat.textContent = oppLocked ? 'Both locked — revealing...' : 'Waiting for opponent...';
   } else {
-    const ready = Object.keys(myForm).length >= prev + needed;
+    // Count only actual heroes (not extras like turrets/clones/phantimals)
+    const nonHeroNames = getNonHeroNames();
+    const heroCount = Object.values(myForm).filter(n => !nonHeroNames.has(n)).length;
+    const hasPendingExtras = pendingExtras.length > 0;
+    const ready = heroCount >= prev + needed && !hasPendingExtras;
     btn.disabled = !ready; btn.textContent = 'Lock In Formation';
     btn.onclick = lockFormation;
-    if (info) info.textContent = ready ? 'Ready! Lock in when set.' : 'Place ' + (prev + needed - Object.keys(myForm).length) + ' more hero' + (prev + needed - Object.keys(myForm).length !== 1 ? 'es' : '');
+    if (hasPendingExtras) {
+      if (info) info.textContent = 'Place ' + pendingExtras[0].name + ' (' + pendingExtras.length + ' remaining)';
+    } else if (ready) {
+      if (info) info.textContent = 'Ready! Lock in when set.';
+    } else {
+      const remaining = prev + needed - heroCount;
+      if (info) info.textContent = 'Place ' + remaining + ' more hero' + (remaining !== 1 ? 'es' : '');
+    }
   }
 }
 
 function renderFormation() {
   renderFormHeroes(); renderFormHexGrid(); renderFormOpp(); updateFormLock();
+  renderExtrasState();
+  renderPhantimalBar();
+  renderArtifactSelector();
   const el = document.getElementById('formRoundBadge');
   if (el) el.textContent = 'Round ' + (draft.formRound || 1) + ' — Place ' + ((draft.formRound || 1) === 1 ? 3 : 2);
+}
+
+// ═══════════════════════════════════════════════════════════
+// EXTRAS PLACEMENT UI
+// ═══════════════════════════════════════════════════════════
+function renderExtrasState() {
+  const banner = document.getElementById('extrasBanner');
+  const text = document.getElementById('extrasBannerText');
+  if (!banner) return;
+  if (pendingExtras.length > 0) {
+    banner.style.display = 'block';
+    if (text) text.textContent = '🎯 Place ' + pendingExtras[0].name + ' on a tile (' + pendingExtras.length + ' remaining)';
+  } else {
+    banner.style.display = 'none';
+  }
+}
+
+function cancelExtras() {
+  if (!pendingExtrasOwner) return;
+  // Remove the hero that spawned the extras and any already-placed extras
+  const myForm = myRole === 'blue' ? (draft.blueFormation || {}) : (draft.redFormation || {});
+  const ownerHero = HEROES.find(h => h.name === pendingExtrasOwner);
+  const allExtraNames = ownerHero ? ownerHero.extras.map(e => e.name) : [];
+  // Remove owner hero and all its extras from formation
+  Object.keys(myForm).forEach(k => {
+    if (myForm[k] === pendingExtrasOwner || allExtraNames.includes(myForm[k])) {
+      if (myRole === 'blue') delete draft.blueFormation[k]; else delete draft.redFormation[k];
+    }
+  });
+  pendingExtras = [];
+  pendingExtrasOwner = null;
+  saveDraft(); renderFormation();
+  toast('Placement cancelled — hero removed');
+}
+
+// ═══════════════════════════════════════════════════════════
+// PHANTIMAL SYSTEM — auto-detects from faction counts
+// ═══════════════════════════════════════════════════════════
+function getActivePhantials() {
+  const myPicks = myRole === 'blue' ? (draft.bluePicks || []) : (draft.redPicks || []);
+  const heroMap = Object.fromEntries(HEROES.map(h => [h.name, h]));
+  const factionCounts = {};
+  myPicks.forEach(name => {
+    const h = heroMap[name];
+    if (!h) return;
+    let faction = h.faction;
+    // Celestial and Hypogean share a phantimal
+    if (faction === 'Hypogean') faction = 'Celestial';
+    factionCounts[faction] = (factionCounts[faction] || 0) + 1;
+  });
+
+  const active = [];
+  Object.entries(factionCounts).forEach(([faction, count]) => {
+    if (count >= 3 && PHANTIMALS[faction]) {
+      active.push({...PHANTIMALS[faction], sourceFaction: faction});
+    }
+  });
+  return active;
+}
+
+function renderPhantimalBar() {
+  const bar = document.getElementById('phantimalBar');
+  if (!bar) return;
+  const phantimals = getActivePhantials();
+  const myForm = myRole === 'blue' ? (draft.blueFormation || {}) : (draft.redFormation || {});
+  const placed = Object.values(myForm);
+
+  bar.innerHTML = '<span class="phantimal-label">Phantimals</span>';
+
+  if (phantimals.length === 0) {
+    bar.innerHTML += '<span style="font-size:10px;color:var(--text3)">Need 3 heroes of same faction</span>';
+    return;
+  }
+
+  phantimals.forEach(ph => {
+    const isPlaced = placed.includes(ph.name);
+    const isPlacing = pendingExtras.length > 0; // Don't allow phantimal placement during extras
+    const chip = document.createElement('div');
+    chip.className = 'phantimal-chip' + (isPlaced ? ' placed' : ' needs-placement');
+    chip.innerHTML = '<span class="ph-em">' + ph.em + '</span>' + ph.name + (isPlaced ? ' ✓' : ' — tap to place');
+    if (!isPlaced && !isPlacing) {
+      chip.onclick = () => {
+        formSelHero = null;
+        formMovingFrom = null;
+        pendingExtras = [{name: ph.name, em: ph.em}];
+        pendingExtrasOwner = '__phantimal__';
+        renderFormation();
+        toast('Tap a tile to place ' + ph.name);
+      };
+    }
+    bar.appendChild(chip);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// ARTIFACT SELECTION — 1 per player during formation
+// ═══════════════════════════════════════════════════════════
+function renderArtifactSelector() {
+  const grid = document.getElementById('artifactGrid');
+  if (!grid) return;
+  const myArtifact = myRole === 'blue' ? (draft.blueArtifact || null) : (draft.redArtifact || null);
+  const myLocked = myRole === 'blue' ? draft.blueLocked : draft.redLocked;
+
+  if (ARTIFACTS.length === 0) {
+    grid.innerHTML = '<div class="artifact-none">No artifacts configured yet</div>';
+    return;
+  }
+
+  grid.innerHTML = '';
+  ARTIFACTS.forEach(art => {
+    const chip = document.createElement('div');
+    chip.className = 'artifact-chip' + (myArtifact === art.name ? ' selected' : '');
+    chip.innerHTML = '<span class="art-em">' + art.em + '</span>' + art.name;
+    if (!myLocked && !draft.formRevealed) {
+      chip.onclick = () => {
+        if (myRole === 'blue') draft.blueArtifact = art.name;
+        else draft.redArtifact = art.name;
+        saveDraft();
+        renderArtifactSelector();
+      };
+    }
+    grid.appendChild(chip);
+  });
 }
 
 function lockFormation() {
@@ -2976,6 +3654,7 @@ function showFinalFormationScreen() {
   renderSeriesScoreboard();
   renderWinnerButtons();
   renderActionButtons();
+  renderPrediction();
   const heroMap = Object.fromEntries(HEROES.map(h => [h.name, h]));
 
   const makeGrid = (formation, role) => {
@@ -3187,12 +3866,26 @@ function syncFormation(d) {
     <div class="form-round-badge" id="formRoundBadge">Round 1 — Place 3</div>
     <div class="form-status" id="formStatus">Select a hero, then tap a tile</div>
   </div>
+  <!-- Extras placement banner (shown when placing turrets/clones/splits) -->
+  <div id="extrasBanner" class="extras-banner" style="display:none">
+    <div id="extrasBannerText">Place unit on a tile</div>
+    <button class="extras-cancel" onclick="cancelExtras()">✕ Cancel placement</button>
+  </div>
   <div class="form-body">
     <div class="form-heroes-panel" id="formHeroesPanel">
       <div class="form-panel-label">Your Heroes</div>
     </div>
     <div class="form-grid-area">
       <svg id="hexSvgForm" style="overflow:visible;display:block;min-width:300px;min-height:400px"></svg>
+      <!-- Artifact selector -->
+      <div class="artifact-selector" id="artifactSelector" style="width:280px">
+        <div class="artifact-label">Your Artifact</div>
+        <div class="artifact-grid" id="artifactGrid"></div>
+      </div>
+      <!-- Phantimal bar -->
+      <div class="phantimal-bar" id="phantimalBar">
+        <span class="phantimal-label">Phantimals</span>
+      </div>
       <div class="form-lock-area" style="width:280px">
         <div class="lock-info" id="lockInfo">Place your heroes on your tiles</div>
         <button class="btn-lock" id="lockBtn" disabled onclick="lockFormation()">Lock In Formation</button>
