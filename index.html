@@ -1455,7 +1455,7 @@ const HEROES = [
   {name:"Viperian", em:"🐍", cls:"Mage", faction:"Graveborn"},
   {name:"Walker", em:"🔫", cls:"Rogue", faction:"Lightbearer"},
   {name:"Zandrok", em:"⚔️", cls:"Warrior", faction:"Mauler"},
-  {name:"Zanie", em:"🏹", cls:"Marksman", faction:"Lightbearer", extras:[{name:"Zanie Turret 1",em:"🎯"},{name:"Zanie Turret 2",em:"🎯"}]},
+  {name:"Zanie", em:"🏹", cls:"Marksman", faction:"Lightbearer", extras:[{name:"Zanie Turret 1",em:"🎯",img:"hexes/unit/Zanie Turret.png"},{name:"Zanie Turret 2",em:"🎯",img:"hexes/unit/Zanie Turret.png"}]},
   {name:"Zorya", em:"🪨", cls:"Warrior", faction:"Graveborn"}
 ];
 const CLASSES = ["All","Tank","Warrior","Mage","Support","Marksman","Rogue"];
@@ -2265,6 +2265,22 @@ function showResult() {
   draft.blueLocked   = false;
   draft.redLocked    = false;
   draft.formRevealed = false;
+
+  // Trigger server-side prediction (host only, fire and forget)
+  if (myRole === 'blue' && sessionToken && !skippedDraft) {
+    fetch(API_BASE + '/draft/predict', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-session-token': sessionToken },
+      body: JSON.stringify({
+        roomCode,
+        bluePicks: draft.bluePicks || [],
+        redPicks: draft.redPicks || [],
+        blueBans: draft.blueBans || [],
+        redBans: draft.redBans || []
+      })
+    }).catch(err => console.log('Prediction skipped:', err.message));
+  }
+
   saveDraft();
   showMapVote();
 }
@@ -2592,7 +2608,7 @@ async function logWinner(winnerColor) {
   if (skippedDraft) { toast('Cannot log results for skipped/test drafts'); return; }
 
   try {
-    const data = await api('/match/winner', { roomCode, winnerColor });
+    const data = await api('/match/winner', { roomCode, winnerColor, draftMode: draft.draftMode || 'seasonal' });
     blueWins = data.blueWins;
     redWins = data.redWins;
     gameLogged = true;
@@ -2924,22 +2940,8 @@ function showMapVote() {
 }
 
 function setDraftMode(mode) {
-  // Solo mode
-  if (!roomCode || !draft.redName || draft.redName === 'Red') {
-    draft.draftMode = mode;
-    renderDraftModeButtons();
-    return;
-  }
-
-  // Multiplayer — write to Firebase, both clients see it
-  waitForFb(() => {
-    window._fbGet(roomCode, (d) => {
-      if (!d) return;
-      d.draftMode = mode;
-      window._fbSet(roomCode, d);
-    });
-  }, 20);
   draft.draftMode = mode;
+  saveDraft();
   renderDraftModeButtons();
 }
 
@@ -3201,7 +3203,7 @@ function renderFormHexGrid() {
   // Add extras to the lookup so turrets/clones/split units render on tiles
   HEROES.forEach(h => {
     if (h.extras) h.extras.forEach(e => {
-      if (!heroMap[e.name]) heroMap[e.name] = { name: e.name, em: e.em, cls: 'Summon', faction: h.faction, isExtra: true };
+      if (!heroMap[e.name]) heroMap[e.name] = { name: e.name, em: e.em, cls: 'Summon', faction: h.faction, isExtra: true, img: e.img || null };
     });
   });
   // Add phantimals to the lookup
@@ -3759,6 +3761,15 @@ function showFinalFormationScreen() {
   renderActionButtons();
   renderPrediction();
   const heroMap = Object.fromEntries(HEROES.map(h => [h.name, h]));
+  // Add extras (turrets, clones, splits) and phantimals to lookup
+  HEROES.forEach(h => {
+    if (h.extras) h.extras.forEach(e => {
+      if (!heroMap[e.name]) heroMap[e.name] = { name: e.name, em: e.em, cls: 'Summon', faction: h.faction, img: e.img || null };
+    });
+  });
+  Object.values(PHANTIMALS).forEach(ph => {
+    if (!heroMap[ph.name]) heroMap[ph.name] = { name: ph.name, em: ph.em, cls: 'Phantimal', faction: ph.faction, img: ph.img || null };
+  });
 
   const makeGrid = (formation, role) => {
     const W=50, H=W*(20/18), R=W/Math.sqrt(3), VVS=W*1.0, MMT=-7, PPL=2.5;
@@ -3824,17 +3835,29 @@ function showFinalFormationScreen() {
   const blueList = makeList(draft.blueFormation||{}, '#6090ff');
   const redList  = makeList(draft.redFormation ||{}, '#ff6090');
 
+  // Artifact display
+  const blueArt = draft.blueArtifact ? '<div style="margin-top:10px;padding:8px 12px;border-radius:7px;background:rgba(232,184,75,0.08);border:1px solid rgba(232,184,75,0.25);font-size:11px;color:var(--gold);display:flex;align-items:center;gap:8px">⚡ Artifact: <strong>' + draft.blueArtifact + '</strong></div>' : '';
+  const redArt = draft.redArtifact ? '<div style="margin-top:10px;padding:8px 12px;border-radius:7px;background:rgba(232,184,75,0.08);border:1px solid rgba(232,184,75,0.25);font-size:11px;color:var(--gold);display:flex;align-items:center;gap:8px">⚡ Artifact: <strong>' + draft.redArtifact + '</strong></div>' : '';
+
+  // Draft mode indicator
+  const modeLabel = (draft.draftMode || 'seasonal') === 'seasonal' ? '🐉 Seasonal' : '⚔️ Preseasonal';
+
   document.getElementById('resultTeams').innerHTML = `
     <div class="result-team">
       <div class="result-team-name" style="color:#6090ff;border-bottom:1px solid rgba(96,144,255,0.2);padding-bottom:10px;margin-bottom:14px">🔵 ${draft.blueName}</div>
       ${blueGrid}
       <div style="margin-top:14px">${blueList}</div>
+      ${blueArt}
     </div>
-    <div style="display:flex;align-items:center;font-family:'Cinzel',serif;font-size:22px;font-weight:900;color:var(--text3);padding:0 4px;align-self:center">VS</div>
+    <div style="display:flex;flex-direction:column;align-items:center;font-family:'Cinzel',serif;padding:0 4px;align-self:center;gap:6px">
+      <div style="font-size:22px;font-weight:900;color:var(--text3)">VS</div>
+      <div style="font-size:9px;color:var(--text3);letter-spacing:0.12em">${modeLabel}</div>
+    </div>
     <div class="result-team">
       <div class="result-team-name" style="color:#ff6090;border-bottom:1px solid rgba(255,96,144,0.2);padding-bottom:10px;margin-bottom:14px">🔴 ${draft.redName}</div>
       ${redGrid}
       <div style="margin-top:14px">${redList}</div>
+      ${redArt}
     </div>`;
 }
 
