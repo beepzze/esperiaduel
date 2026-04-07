@@ -1463,22 +1463,42 @@ const FACTIONS = ["All Factions","Lightbearer","Mauler","Wilder","Graveborn","Ce
 
 // ── PHANTIMALS — auto-generated when 3+ of same faction are picked ──
 const PHANTIMALS = {
-  Lightbearer: {name:"LB Phantimal", em:"🦁", faction:"Lightbearer"},
-  Mauler:      {name:"Mauler Phantimal", em:"🦂", faction:"Mauler"},
-  Wilder:      {name:"Wilder Phantimal", em:"🦌", faction:"Wilder"},
-  Graveborn:   {name:"GB Phantimal", em:"🦇", faction:"Graveborn"},
-  Celestial:   {name:"Cel/Hypo Phantimal", em:"🐉", faction:"Celestial"},
-  Hypogean:    {name:"Cel/Hypo Phantimal", em:"🐉", faction:"Hypogean"}
+  Lightbearer: {name:"Sigmund", em:"🦁", faction:"Lightbearer", img:"hexes/unit/phantimal/Sigmund.png"},
+  Mauler:      {name:"Alpha Bear", em:"🐻", faction:"Mauler", img:"hexes/unit/phantimal/Alpha Bear.png"},
+  Wilder:      {name:"Bloom Mother", em:"🌸", faction:"Wilder", img:"hexes/unit/phantimal/Bloom Mother.png"},
+  Graveborn:   {name:"Shadowed Charon", em:"💀", faction:"Graveborn", img:"hexes/unit/phantimal/Shadowed Charon.png"},
+  Celestial:   {name:"Skyclops", em:"👁️", faction:"Celestial", img:"hexes/unit/phantimal/Skyclops.png"},
+  Hypogean:    {name:"Skyclops", em:"👁️", faction:"Hypogean", img:"hexes/unit/phantimal/Skyclops.png"}
 };
 
 // ── ARTIFACTS — each player picks 1 during formation ──
-// Add your artifacts here: {name, em, category, description}
-const ARTIFACTS = [
-  // Preseasonal
-  // {name:"Artifact Name", em:"⚡", category:"Preseasonal", description:"Short desc"},
-  // Seasonal
-  // {name:"Artifact Name", em:"🔥", category:"Seasonal", description:"Short desc"},
+const ARTIFACTS_PRESEASONAL = [
+  {name:"Awakening", img:"hexes/artifact/pre-season/Awakening.png"},
+  {name:"Blazing", img:"hexes/artifact/pre-season/Blazing.png"},
+  {name:"Confining", img:"hexes/artifact/pre-season/Confining.png"},
+  {name:"Enlightening", img:"hexes/artifact/pre-season/Enlightening.png"},
+  {name:"Ironwall", img:"hexes/artifact/pre-season/Ironwall.png"},
+  {name:"Starshard", img:"hexes/artifact/pre-season/Starshard.png"},
 ];
+const ARTIFACTS_SEASONAL = [
+  {name:"Arcanewild", img:"hexes/artifact/season-6/Arcanewild.png"},
+  {name:"Bladechaser", img:"hexes/artifact/season-6/Bladechaser.png"},
+  {name:"Blazeburn", img:"hexes/artifact/season-6/Blazeburn.png"},
+  {name:"Bulwark", img:"hexes/artifact/season-6/Bulwark.png"},
+  {name:"Crescent", img:"hexes/artifact/season-6/Crescent.png"},
+  {name:"Earthshell", img:"hexes/artifact/season-6/Earthshell.png"},
+  {name:"Lightheal", img:"hexes/artifact/season-6/Lightheal.png"},
+  {name:"Manawake", img:"hexes/artifact/season-6/Manawake.png"},
+  {name:"Razorbeam", img:"hexes/artifact/season-6/Razorbeam.png"},
+  {name:"Resonating", img:"hexes/artifact/season-6/Resonating.png"},
+  {name:"Rockbind", img:"hexes/artifact/season-6/Rockbind.png"},
+  {name:"Starshower", img:"hexes/artifact/season-6/Starshower.png"},
+];
+// Active artifacts determined by draft mode
+function getActiveArtifacts() {
+  const mode = draft.draftMode || 'seasonal';
+  return mode === 'seasonal' ? ARTIFACTS_SEASONAL : ARTIFACTS_PRESEASONAL;
+}
  
 // ═══════════════════════════════════════════════════════════
 // DRAFT SEQUENCE
@@ -1812,6 +1832,8 @@ function enterDraftScreen() {
             const other = myRole==='blue' ? d.redVote : d.blueVote;
             if (other) { const el = document.getElementById('mapVoteStatus'); if (el) el.textContent = 'Opponent voted for ' + other + '!'; }
             if (d.attackerRole) { attackerRole = d.attackerRole; const res = document.getElementById('rolesResult'); if (res) res.textContent = attackerRole==='blue' ? '🔵 '+(d.blueName||'Blue')+' attacks · 🔴 '+(d.redName||'Red')+' defends' : '🔴 '+(d.redName||'Red')+' attacks · 🔵 '+(d.blueName||'Blue')+' defends'; }
+            // Sync draft mode
+            if (d.draftMode) { draft.draftMode = d.draftMode; renderDraftModeButtons(); }
           } else {
             showMapVote();
           }
@@ -2898,6 +2920,47 @@ function showMapVote() {
   showScreen('mapVoteScreen');
   myVote = null;
   renderVoteBtns();
+  renderDraftModeButtons();
+}
+
+function setDraftMode(mode) {
+  // Solo mode
+  if (!roomCode || !draft.redName || draft.redName === 'Red') {
+    draft.draftMode = mode;
+    renderDraftModeButtons();
+    return;
+  }
+
+  // Multiplayer — write to Firebase, both clients see it
+  waitForFb(() => {
+    window._fbGet(roomCode, (d) => {
+      if (!d) return;
+      d.draftMode = mode;
+      window._fbSet(roomCode, d);
+    });
+  }, 20);
+  draft.draftMode = mode;
+  renderDraftModeButtons();
+}
+
+function renderDraftModeButtons() {
+  const mode = draft.draftMode || 'seasonal';
+  const preBtn = document.getElementById('modePreseasonBtn');
+  const seaBtn = document.getElementById('modeSeasonalBtn');
+  const status = document.getElementById('draftModeStatus');
+  if (preBtn) {
+    preBtn.className = 'btn ' + (mode === 'preseasonal' ? 'btn-gold' : 'btn-ghost');
+    preBtn.style.cssText = 'width:auto;padding:10px 20px;font-size:11px';
+  }
+  if (seaBtn) {
+    seaBtn.className = 'btn ' + (mode === 'seasonal' ? 'btn-purple' : 'btn-ghost');
+    seaBtn.style.cssText = 'width:auto;padding:10px 20px;font-size:11px';
+  }
+  if (status) {
+    status.textContent = mode === 'seasonal'
+      ? '🐉 Seasonal — phantimals active (3+ same faction)'
+      : '⚔️ Preseasonal — no phantimals';
+  }
 }
 
 function renderVoteBtns() {
@@ -3143,7 +3206,7 @@ function renderFormHexGrid() {
   });
   // Add phantimals to the lookup
   Object.values(PHANTIMALS).forEach(ph => {
-    if (!heroMap[ph.name]) heroMap[ph.name] = { name: ph.name, em: ph.em, cls: 'Phantimal', faction: ph.faction, isExtra: true };
+    if (!heroMap[ph.name]) heroMap[ph.name] = { name: ph.name, em: ph.em, cls: 'Phantimal', faction: ph.faction, isExtra: true, img: ph.img };
   });
   const myLocked = myRole === 'blue' ? draft.blueLocked : draft.redLocked;
 
@@ -3185,6 +3248,7 @@ function renderFormHexGrid() {
 
     if (hasH) {
       const hName = (hero || eH).name;
+      const hData = hero || eH;
       const size = FR * 1.8;
       const clipId = 'hclip' + ai;
       const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
@@ -3198,7 +3262,7 @@ function renderFormHexGrid() {
       defs.appendChild(clipPath);
       svg.appendChild(defs);
       const img = document.createElementNS('http://www.w3.org/2000/svg', 'image');
-      img.setAttribute('href', heroImg(hName));
+      img.setAttribute('href', hData.img || heroImg(hName));
       img.setAttribute('x', (cx - size/2).toFixed(1));
       img.setAttribute('y', (cy - size/2).toFixed(1));
       img.setAttribute('width', size.toFixed(1));
@@ -3346,14 +3410,17 @@ function renderFormHeroes() {
     panel.appendChild(banner);
   }
 
-  // Show moving mode banner
+  // Show moving mode banner with move and remove options
   if (formMovingFrom !== null) {
     const myForm_ = myRole === 'blue' ? (draft.blueFormation || {}) : (draft.redFormation || {});
     const movingName = myForm_[formMovingFrom] || '?';
     const banner = document.createElement('div');
-    banner.style.cssText = 'width:100%;padding:8px 10px;border-radius:7px;background:rgba(155,111,255,0.12);border:1px solid rgba(155,111,255,0.35);font-size:11px;color:var(--pur2);text-align:center;cursor:pointer;font-family:Cinzel,serif;letter-spacing:0.08em';
-    banner.textContent = 'Moving ' + movingName + ' — tap tile to place, or tap here to cancel';
-    banner.onclick = () => { formMovingFrom = null; renderFormation(); };
+    banner.style.cssText = 'width:100%;padding:8px 10px;border-radius:7px;background:rgba(155,111,255,0.12);border:1px solid rgba(155,111,255,0.35);font-size:11px;color:var(--pur2);text-align:center;font-family:Cinzel,serif;letter-spacing:0.08em';
+    banner.innerHTML = '<div>Moving ' + movingName + ' — tap a tile to place</div>' +
+      '<div style="display:flex;gap:8px;justify-content:center;margin-top:6px">' +
+        '<button style="font-size:10px;padding:5px 14px;border-radius:6px;border:1px solid rgba(155,111,255,0.4);background:none;color:var(--pur2);cursor:pointer;font-family:Cinzel,serif;letter-spacing:0.06em" onclick="formMovingFrom=null;renderFormation()">Cancel</button>' +
+        '<button style="font-size:10px;padding:5px 14px;border-radius:6px;border:1px solid rgba(255,94,108,0.4);background:rgba(255,94,108,0.1);color:var(--red);cursor:pointer;font-family:Cinzel,serif;letter-spacing:0.06em" onclick="removeHeroFromTile()">Remove</button>' +
+      '</div>';
     panel.appendChild(banner);
   }
 
@@ -3499,6 +3566,33 @@ function renderExtrasState() {
   }
 }
 
+function removeHeroFromTile() {
+  if (formMovingFrom === null) return;
+  const myForm = myRole === 'blue' ? (draft.blueFormation || {}) : (draft.redFormation || {});
+  const myFormR1 = myRole === 'blue' ? (draft.blueFormationR1 || {}) : (draft.redFormationR1 || {});
+  const ai = formMovingFrom;
+
+  // Don't allow removing R1-locked placements
+  if (myFormR1[ai]) { toast('Round 1 placement is locked'); formMovingFrom = null; renderFormation(); return; }
+
+  const removedName = myForm[ai];
+  // Remove hero and all its extras
+  const heroData = HEROES.find(h => h.name === removedName);
+  if (heroData && heroData.extras) {
+    const extraNames = heroData.extras.map(e => e.name);
+    Object.keys(myForm).forEach(k => {
+      if (extraNames.includes(myForm[k])) {
+        if (myRole === 'blue') delete draft.blueFormation[k]; else delete draft.redFormation[k];
+      }
+    });
+  }
+  if (myRole === 'blue') delete draft.blueFormation[ai]; else delete draft.redFormation[ai];
+  if (pendingExtrasOwner === removedName) { pendingExtras = []; pendingExtrasOwner = null; }
+  formMovingFrom = null;
+  saveDraft(); renderFormation();
+  toast(removedName + ' removed');
+}
+
 function cancelExtras() {
   if (!pendingExtrasOwner) return;
   // Remove the hero that spawned the extras and any already-placed extras
@@ -3545,6 +3639,14 @@ function getActivePhantials() {
 function renderPhantimalBar() {
   const bar = document.getElementById('phantimalBar');
   if (!bar) return;
+
+  // Only show phantimals in seasonal mode
+  const mode = draft.draftMode || 'seasonal';
+  if (mode !== 'seasonal') {
+    bar.innerHTML = '<span class="phantimal-label">Phantimals</span><span style="font-size:10px;color:var(--text3)">Preseasonal mode — no phantimals</span>';
+    return;
+  }
+
   const phantimals = getActivePhantials();
   const myForm = myRole === 'blue' ? (draft.blueFormation || {}) : (draft.redFormation || {});
   const placed = Object.values(myForm);
@@ -3558,10 +3660,10 @@ function renderPhantimalBar() {
 
   phantimals.forEach(ph => {
     const isPlaced = placed.includes(ph.name);
-    const isPlacing = pendingExtras.length > 0; // Don't allow phantimal placement during extras
+    const isPlacing = pendingExtras.length > 0;
     const chip = document.createElement('div');
     chip.className = 'phantimal-chip' + (isPlaced ? ' placed' : ' needs-placement');
-    chip.innerHTML = '<span class="ph-em">' + ph.em + '</span>' + ph.name + (isPlaced ? ' ✓' : ' — tap to place');
+    chip.innerHTML = '<img src="' + (ph.img || '') + '" alt="' + ph.name + '" style="width:24px;height:24px;border-radius:50%;object-fit:cover" onerror="this.outerHTML=\'<span class=ph-em>' + ph.em + '</span>\'">' + ph.name + (isPlaced ? ' ✓' : ' — tap to place');
     if (!isPlaced && !isPlacing) {
       chip.onclick = () => {
         formSelHero = null;
@@ -3584,17 +3686,18 @@ function renderArtifactSelector() {
   if (!grid) return;
   const myArtifact = myRole === 'blue' ? (draft.blueArtifact || null) : (draft.redArtifact || null);
   const myLocked = myRole === 'blue' ? draft.blueLocked : draft.redLocked;
+  const artifacts = getActiveArtifacts();
+  const mode = draft.draftMode || 'seasonal';
 
-  if (ARTIFACTS.length === 0) {
-    grid.innerHTML = '<div class="artifact-none">No artifacts configured yet</div>';
-    return;
-  }
+  // Update label
+  const label = grid.parentElement.querySelector('.artifact-label');
+  if (label) label.textContent = 'Your Artifact (' + (mode === 'seasonal' ? 'Seasonal' : 'Preseasonal') + ')';
 
   grid.innerHTML = '';
-  ARTIFACTS.forEach(art => {
+  artifacts.forEach(art => {
     const chip = document.createElement('div');
     chip.className = 'artifact-chip' + (myArtifact === art.name ? ' selected' : '');
-    chip.innerHTML = '<span class="art-em">' + art.em + '</span>' + art.name;
+    chip.innerHTML = '<img src="' + art.img + '" alt="' + art.name + '" style="width:28px;height:28px;border-radius:4px;object-fit:cover" onerror="this.style.display=\'none\'">' + art.name;
     if (!myLocked && !draft.formRevealed) {
       chip.onclick = () => {
         if (myRole === 'blue') draft.blueArtifact = art.name;
@@ -3855,6 +3958,17 @@ function syncFormation(d) {
       <button class="btn btn-ghost" id="coinFlipBtn" style="width:auto;padding:10px 24px" onclick="coinFlipRoles()">⚔️ Coin Flip Roles</button>
     </div>
     <div id="rolesResult" style="font-size:13px;color:var(--teal);text-align:center;min-height:20px"></div>
+
+    <!-- Draft Mode Toggle -->
+    <div style="width:100%;border-top:1px solid var(--bdr);padding-top:20px;display:flex;flex-direction:column;align-items:center;gap:10px">
+      <div style="font-family:'Cinzel',serif;font-size:10px;letter-spacing:0.18em;color:var(--text3);text-transform:uppercase">Draft Mode</div>
+      <div style="display:flex;gap:10px" id="draftModeButtons">
+        <button class="btn btn-ghost" id="modePreseasonBtn" style="width:auto;padding:10px 20px;font-size:11px" onclick="setDraftMode('preseasonal')">⚔️ Preseasonal</button>
+        <button class="btn btn-purple" id="modeSeasonalBtn" style="width:auto;padding:10px 20px;font-size:11px" onclick="setDraftMode('seasonal')">🐉 Seasonal</button>
+      </div>
+      <div id="draftModeStatus" style="font-size:11px;color:var(--text2);text-align:center">Seasonal mode includes phantimals</div>
+    </div>
+
     <div id="mapVoteResult" style="font-family:'Cinzel',serif;font-size:18px;color:var(--gold);min-height:28px;text-align:center"></div>
   </div>
 </div>
