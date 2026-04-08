@@ -2608,6 +2608,7 @@ async function logWinner(winnerColor) {
   if (skippedDraft) { toast('Cannot log results for skipped/test drafts'); return; }
 
   try {
+    alert('Sending draftMode: ' + (draft.draftMode || 'seasonal'));
     const data = await api('/match/winner', { roomCode, winnerColor, draftMode: draft.draftMode || 'seasonal' });
     blueWins = data.blueWins;
     redWins = data.redWins;
